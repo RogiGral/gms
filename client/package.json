@@ -16,12 +16,17 @@
     "@types/react": "^16.14.24",
     "@types/react-dom": "^16.9.14",
     "@types/react-redux": "^7.1.23",
+    "@types/react-router-dom": "^5.1.5",
+    "formik": "^2.2.9",
+    "jwt-decode": "^3.1.2",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-query": "^3.34.17",
     "react-redux": "^7.2.6",
-    "react-router-dom": "^6.2.2",
+    "react-router": "^5.2.0",
+    "react-router-dom": "^5.2.0",
     "react-scripts": "5.0.0",
+    "react-toastify": "^8.2.0",
     "typescript": "~4.1.5"
   },
   "scripts": {
@@ -48,5 +53,8 @@
   "devDependencies": {
     "prettier": "^2.6.1",
     "tsconfig-paths": "^3.14.1"
+  },
+  "browser": {
+    "[module-name]": false
   }
 }
