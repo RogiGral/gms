@@ -153,7 +153,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     public void resetPassword(String email) throws EmailNotFoundException {
         User user = userRepository.findUserByEmail(email);
         if(user== null){
-            throw new EmailNotFoundException(NO_USER_FOUND_BY_EMAIL);
+            throw new EmailNotFoundException(NO_USER_FOUND_BY_EMAIL + email);
         }
         String password = generatePassword();
         user.setPassword(encodedPassword(password));
