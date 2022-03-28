@@ -1,4 +1,4 @@
-export interface LoginResponse {
+export interface FetchUserResponse {
   userId: string;
   firstName: string;
   lastName: string;
@@ -12,4 +12,12 @@ export interface LoginResponse {
   authorities: string[];
   notLocked: boolean;
   active: boolean;
+}
+
+export type LoginResponse = FetchUserResponse;
+export type RegisterResponse = FetchUserResponse;
+
+export interface ResetPasswordResponse {
+  timeStamp: string;
+  message: string;
 }

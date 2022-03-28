@@ -1,8 +1,10 @@
 import * as React from 'react';
+import * as Yup from 'yup';
 import { Formik, Form } from 'formik';
 import { useMutation } from 'react-query';
 import { toast } from 'react-toastify';
 import Api from '../../api/Api';
+import Session from '../../api/Session';
 import { useAppDispatch } from '../../reduxHooks';
 import { loadUser } from '../../reducers/authReducer';
 
@@ -15,14 +17,22 @@ import Box from '@mui/material/Box';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
+import { useHistory } from 'react-router';
+import { Link as ReactRouterLink } from 'react-router-dom';
 
 interface Credentials {
   username: string;
   password: string;
 }
 
+const LoginSchema = Yup.object().shape({
+  username: Yup.string().required('Please enter username'),
+  password: Yup.string().required('Please enter password'),
+});
+
 export default function LoginPage() {
   const dispatch = useAppDispatch();
+  const history = useHistory();
 
   const loginMutation = useMutation(
     ({ username, password }: Credentials) => {
@@ -34,20 +44,17 @@ export default function LoginPage() {
         toast.error(error.message);
       },
       onSuccess: data => {
-        console.log('Logged in! data:', data);
-        dispatch(loadUser(data));
+        const [userData, jwtToken] = data;
+        console.log('Logged in! data:', userData, 'jwt token:', jwtToken);
+        Session.saveSession(jwtToken);
+        dispatch(loadUser(userData));
+        history.push('/');
         toast.success('Logged in!');
       },
     },
   );
 
-  const handleSubmit = ({
-    username,
-    password,
-  }: {
-    username: string;
-    password: string;
-  }) => {
+  const handleSubmit = ({ username, password }: Credentials) => {
     console.log('submitting:', username, password);
     loginMutation.mutate({ username, password });
   };
@@ -75,12 +82,12 @@ export default function LoginPage() {
               password: '',
             }}
             onSubmit={handleSubmit}
+            validationSchema={LoginSchema}
           >
             {({ values, handleChange, touched, errors }) => (
               <Form>
                 <TextField
                   margin="normal"
-                  required
                   fullWidth
                   id="username"
                   label="Username"
@@ -94,7 +101,6 @@ export default function LoginPage() {
                 />
                 <TextField
                   margin="normal"
-                  required
                   fullWidth
                   name="password"
                   label="Password"
@@ -119,12 +125,16 @@ export default function LoginPage() {
           </Formik>
           <Grid container>
             <Grid item xs>
-              <Link href="#" variant="body2">
+              <Link
+                variant="body2"
+                component={ReactRouterLink}
+                to="/forgot-password"
+              >
                 Forgot password?
               </Link>
             </Grid>
             <Grid item>
-              <Link href="#" variant="body2">
+              <Link variant="body2" component={ReactRouterLink} to="/register">
                 {"Don't have an account? Sign Up"}
               </Link>
             </Grid>

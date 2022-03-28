@@ -1,8 +1,13 @@
 import Api from '../../Api';
 import { AxiosError } from 'axios';
-import { LoginResponse } from './responses';
+import {
+  FetchUserResponse,
+  LoginResponse,
+  RegisterResponse,
+  ResetPasswordResponse,
+} from './responses';
 
-export default class Index {
+export default class Auth {
   public static async register(
     firstName: string,
     lastName: string,
@@ -23,13 +28,13 @@ export default class Index {
         );
       });
 
-    return response?.data;
+    return response?.data as RegisterResponse;
   }
 
   public static async login(
     username: string,
     password: string,
-  ): Promise<LoginResponse> {
+  ): Promise<[LoginResponse, string]> {
     const response = await Api.createClient()
       .post('/user/login', {
         username,
@@ -41,6 +46,35 @@ export default class Index {
         );
       });
 
-    return response?.data as LoginResponse;
+    console.log('RESPONSE:', response);
+    return [response?.data, response?.headers['jwt-token']] as [
+      LoginResponse,
+      string,
+    ];
+  }
+
+  public static async fetchUser(username: string) {
+    const response = await Api.createClient()
+      .get(`/user/find/${username}`)
+      .catch((err: AxiosError) => {
+        throw new Error(
+          err.response?.data.message || 'Unknown error when fetching user.',
+        );
+      });
+
+    return response?.data as FetchUserResponse;
+  }
+
+  public static async resetPassword(email: string) {
+    const response = await Api.createClient()
+      .get(`/user/resetpassword/${email}`)
+      .catch((err: AxiosError) => {
+        throw new Error(
+          err.response?.data.message ||
+            'Unknown error when resetting password.',
+        );
+      });
+
+    return response?.data as ResetPasswordResponse;
   }
 }
