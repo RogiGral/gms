@@ -10,6 +10,7 @@ import { useMutation } from 'react-query';
 import Api from './api/Api';
 import { loadUser } from './reducers/authReducer';
 import ForgotPasswordPage from './pages/ForgotPasswordPage';
+import LandingPage from './pages/LandingPage';
 
 function App() {
   const user = useAppSelector(state => state.auth.user);
@@ -47,10 +48,11 @@ function App() {
   const renderUnauthorizedRoutes = () => {
     return (
       <>
+        <Route exact path="/" component={LandingPage} />
         <Route exact path="/login" component={LoginPage} />
         <Route exact path="/register" component={RegisterPage} />
         <Route exact path="/forgot-password" component={ForgotPasswordPage} />
-        <Redirect from="*" to="/login" />
+        {/*<Redirect from="*" to="/login" />*/}
       </>
     );
   };

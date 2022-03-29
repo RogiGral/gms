@@ -55,7 +55,7 @@ export default function ForgotPasswordPage() {
           <LockOutlinedIcon />
         </Avatar>
         <Typography component="h1" variant="h5">
-          Sign in
+          Remind your password
         </Typography>
         <Box sx={{ mt: 1 }}>
           <Formik
