@@ -31,18 +31,18 @@ public class UserWorkoutController extends ExceptionHandling {
     UserWorkoutService userWorkoutService;
 
     @PostMapping("/add")
-    public ResponseEntity<UserWorkout> addNewWorkout(@RequestParam("userId") Long userId,
+    public ResponseEntity<UserWorkout> jointWorkout(@RequestParam("userId") Long userId,
                                                  @RequestParam("workoutId") Long workoutId) throws WorkoutNotFoundException {
         UserWorkout newUserWorkout = userWorkoutService.addUserToWorkout(userId,workoutId);
         return new ResponseEntity<>(newUserWorkout, OK);
     }
     @GetMapping("/list")
-    public ResponseEntity<List<UserWorkout>> getAllUsers(@RequestParam("userId") Long userId) {
+    public ResponseEntity<List<UserWorkout>> getAllUserWorkouts(@RequestParam("userId") Long userId) {
         List<UserWorkout> userWorkouts = userWorkoutService.getUserWorkouts(userId);
         return new ResponseEntity<>(userWorkouts, OK);
     }
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<HttpResponse> deleteUserWorkout(@PathVariable("id") Long id) throws WorkoutNotFoundException {
+    public ResponseEntity<HttpResponse> leaveWorkout(@PathVariable("id") Long id) throws WorkoutNotFoundException {
             userWorkoutService.deleteUserWorkout(id);
         return response(OK, "WORKOUT_DELETED_SUCCESSFULLY");
     }

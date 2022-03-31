@@ -28,5 +28,7 @@ public class Workout {
     private String roomNumber;
     private Date workoutStartDate;
     private Date workoutEndDate;
+    private Integer capacity;
+    private Integer participantsNumber;
 
 }

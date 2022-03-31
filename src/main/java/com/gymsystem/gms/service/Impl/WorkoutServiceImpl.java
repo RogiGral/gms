@@ -40,7 +40,7 @@ public class WorkoutServiceImpl implements WorkoutService {
     }
 
     @Override
-    public Workout createWorkout(String workoutName, String trainerUsername, String roomNumber, Date workoutStartDate, Date workoutEndDate) throws WorkoutDateException, WorkoutExistException {
+    public Workout createWorkout(String workoutName, String trainerUsername, String roomNumber,Integer capacity, Date workoutStartDate, Date workoutEndDate) throws WorkoutDateException, WorkoutExistException {
         checkIfTrainerExists(trainerUsername);
         validateStartEndDate(workoutStartDate,workoutEndDate);
         checkIfWorkoutExists(StringUtils.EMPTY,workoutName,trainerUsername,roomNumber,workoutStartDate,workoutEndDate);
@@ -50,13 +50,15 @@ public class WorkoutServiceImpl implements WorkoutService {
         workout.setRoomNumber(roomNumber);
         workout.setWorkoutStartDate(workoutStartDate);
         workout.setWorkoutEndDate(workoutEndDate);
+        workout.setCapacity(capacity);
+        workout.setParticipantsNumber(0);
         workoutRepository.save(workout);
         //wyslij mail do trenera odnosnie treningu; docelowo dodać do kalenarza
         return workout;
     }
 
     @Override
-    public Workout updateWorkout(String currentWorkoutName, String newWorkoutName, String newTrainerUsername, String newRoomNumber, Date newWorkoutStartDate, Date newWorkoutEndDate) throws WorkoutDateException, WorkoutExistException {
+    public Workout updateWorkout(String currentWorkoutName, String newWorkoutName, String newTrainerUsername, String newRoomNumber,Integer newCapacity,Integer newParticipantsNumber, Date newWorkoutStartDate, Date newWorkoutEndDate) throws WorkoutDateException, WorkoutExistException {
         checkIfTrainerExists(newTrainerUsername);
         validateStartEndDate(newWorkoutStartDate,newWorkoutEndDate);
         Workout workout = checkIfWorkoutExists(currentWorkoutName,newWorkoutName,newTrainerUsername,newRoomNumber,newWorkoutStartDate,newWorkoutEndDate);
@@ -65,6 +67,8 @@ public class WorkoutServiceImpl implements WorkoutService {
         workout.setRoomNumber(newRoomNumber);
         workout.setWorkoutStartDate(newWorkoutStartDate);
         workout.setWorkoutEndDate(newWorkoutEndDate);
+        workout.setCapacity(newCapacity);
+        workout.setParticipantsNumber(newParticipantsNumber);
         workoutRepository.save(workout);
         return workout;
     }

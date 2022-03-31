@@ -34,9 +34,10 @@ public class WorkoutController extends ExceptionHandling {
     public ResponseEntity<Workout> addNewWorkout(@RequestParam("workoutName") String workoutName,
                                                  @RequestParam("trainerUsername") String trainerUsername,
                                                  @RequestParam("roomNumber") String roomNumber,
+                                                 @RequestParam("capacity") Integer capacity,
                                                  @RequestParam("workoutStartDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date workoutStartDate,
                                                  @RequestParam("workoutEndDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date workoutEndDate) throws WorkoutDateException, WorkoutExistException {
-        Workout newWorkout = workoutService.createWorkout(workoutName,trainerUsername,roomNumber,workoutStartDate,workoutEndDate);
+        Workout newWorkout = workoutService.createWorkout(workoutName,trainerUsername,roomNumber,capacity,workoutStartDate,workoutEndDate);
         return new ResponseEntity<>(newWorkout, OK);
     }
     @PostMapping("/update")
@@ -45,9 +46,11 @@ public class WorkoutController extends ExceptionHandling {
                                                  @RequestParam("newWorkoutName") String newWorkoutName,
                                                  @RequestParam("newTrainerUsername") String newTrainerUsername,
                                                  @RequestParam("newRoomNumber") String newRoomNumber,
+                                                 @RequestParam("capacity") Integer capacity,
+                                                 @RequestParam("participantsNumber") Integer participantsNumber,
                                                  @RequestParam("newWorkoutStartDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date newWorkoutStartDate,
                                                  @RequestParam("newWorkoutEndDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date newWorkoutEndDate) throws WorkoutDateException, WorkoutExistException {
-        Workout newWorkout = workoutService.updateWorkout(currentWorkoutName,newWorkoutName,newTrainerUsername,newRoomNumber,newWorkoutStartDate,newWorkoutEndDate);
+        Workout newWorkout = workoutService.updateWorkout(currentWorkoutName,newWorkoutName,newTrainerUsername,newRoomNumber,capacity,participantsNumber,newWorkoutStartDate,newWorkoutEndDate);
         return new ResponseEntity<>(newWorkout, OK);
     }
 
