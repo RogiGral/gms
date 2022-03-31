@@ -31,7 +31,7 @@ public class JWTTokenProvider {
 
     @Value("${jwt.secret}")
     private String secret;
-    //private Logger LOGGER = LoggerFactory.getLogger(getClass());
+    private Logger LOGGER = LoggerFactory.getLogger(getClass());
 
     public String generateJwtToken(UserPrincipal userPrincipal) {
         String[] claims = getClaimsFromUser(userPrincipal);
