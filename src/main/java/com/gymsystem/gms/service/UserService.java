@@ -13,6 +13,7 @@ public interface UserService {
     List<User> getUsers();
     User findUserByUsername(String username);
     User findUserByEmail(String email);
+    User findUserByUsernameOrEmail(String username, String email);
 
     User addNewUser(String firstName, String lastName, String username, String email, String role, boolean isNotLocked, boolean isActive, MultipartFile profileFile) throws EmailExistException, UsernameExistException, IOException, NotAnImageFileException, UserNotFoundException;
     User updateUser(String currentUsername,String newFirstName, String newLastName, String newUsername, String newEmail, String role, boolean isNotLocked, boolean isActive, MultipartFile profileFile) throws EmailExistException, UsernameExistException, IOException, NotAnImageFileException, UserNotFoundException;

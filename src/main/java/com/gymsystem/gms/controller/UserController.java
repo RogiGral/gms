@@ -50,7 +50,7 @@ public class UserController extends ExceptionHandling {
     @PostMapping("/login")
     public ResponseEntity<User> login(@RequestBody User user) {
         authenticate(user.getUsername(),user.getPassword());
-        User loginUser =userService.findUserByUsername(user.getUsername());
+        User loginUser =userService.findUserByUsernameOrEmail(user.getUsername(),user.getUsername());
         UserPrincipal userPrincipal = new UserPrincipal(loginUser);
         HttpHeaders jwtHeader = getJwtHeader(userPrincipal);
         return  new ResponseEntity<>(loginUser,jwtHeader, HttpStatus.OK);
