@@ -12,7 +12,6 @@ import java.util.List;
 public interface WorkoutService {
     List<Workout> getWorkouts();
     Workout createWorkout(String workoutName, String trainerUsername,String roomNumber,Integer capacity, Date workoutStartDate, Date workoutEndDate) throws WorkoutDateException, WorkoutExistException;
-    //Workout createWorkout(String workoutName, String trainerUsername, String roomNumber);
     Workout updateWorkout(String currentWorkoutName,String newWorkoutName, String newTrainerUsername,String newRoomNumber,Integer newCapacity,Integer newParticipantsNumber, Date newWorkoutStartDate, Date newWorkoutEndDate) throws WorkoutDateException, WorkoutExistException;
     void deleteWorkout(Long id) throws WorkoutNotFoundException;
 }

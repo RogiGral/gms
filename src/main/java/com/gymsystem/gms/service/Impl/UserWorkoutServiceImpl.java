@@ -1,5 +1,7 @@
 package com.gymsystem.gms.service.Impl;
 
+import com.gymsystem.gms.exceptions.model.UserIsAlreadyInWorkoutException;
+import com.gymsystem.gms.exceptions.model.WorkoutIsFullException;
 import com.gymsystem.gms.exceptions.model.WorkoutNotFoundException;
 import com.gymsystem.gms.model.User;
 import com.gymsystem.gms.model.UserWorkout;
@@ -16,7 +18,7 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.List;
 
-import static com.gymsystem.gms.constraints.WorkoutConstraint.WORKOUT_DOES_NOT_EXISTS;
+import static com.gymsystem.gms.constraints.WorkoutConstraint.*;
 
 @Service
 @Transactional
@@ -34,14 +36,16 @@ public class UserWorkoutServiceImpl implements UserWorkoutService {
     }
 
     @Override
-    public List<UserWorkout> getUserWorkouts(Long id) {
+    public List<UserWorkout> getAllUserWorkouts(Long id) {
         return userWorkoutRepository.findAllByUserId(id);
     }
 
     @Override
-    public UserWorkout addUserToWorkout(Long userId, Long workoutId) throws WorkoutNotFoundException {
+    public UserWorkout addUserToWorkout(Long userId, Long workoutId) throws WorkoutNotFoundException, WorkoutIsFullException, UserIsAlreadyInWorkoutException {
         checkIfUserExists(userId);
         checkIfWorkoutExists(workoutId);
+        checkIfWorkoutIsFull(workoutId);
+        checkIfUserEnterWorkout(userId,workoutId);
         UserWorkout userWorkout = new UserWorkout();
         userWorkout.setUserId(userRepository.findUserById(userId));
         userWorkout.setWorkoutId(workoutRepository.findWorkoutById(workoutId));
@@ -50,10 +54,36 @@ public class UserWorkoutServiceImpl implements UserWorkoutService {
         return userWorkout;
     }
 
+    private void checkIfUserEnterWorkout(Long userId, Long workoutId) throws UserIsAlreadyInWorkoutException {
+        UserWorkout userWorkout = userWorkoutRepository.findUserWorkoutByUserIdAndWorkoutId(userId,workoutId);
+        if(userWorkout!=null){
+            throw new UserIsAlreadyInWorkoutException(USER_IS_IN_WORKOUT);
+        }
+    }
+
+    private void checkIfWorkoutIsFull(Long workoutId) throws WorkoutIsFullException {
+        Workout workout = workoutRepository.findWorkoutById(workoutId);
+        if(workout.getCapacity() <= workout.getParticipantsNumber()){
+            throw new WorkoutIsFullException(WORKOUT_IS_FULL);
+        } else {
+            workout.setParticipantsNumber(workout.getParticipantsNumber()+1);
+        }
+    }
+
     @Override
     public void deleteUserWorkout(Long id) throws WorkoutNotFoundException {
-        checkIfWorkoutExists(id);
+        checkIfUserWorkoutExists(id);
+        UserWorkout userWorkout = userWorkoutRepository.findUserWorkoutById(id);
+        Workout workout = userWorkout.getWorkoutId();
+        workout.setParticipantsNumber(workout.getParticipantsNumber()-1);
         userWorkoutRepository.deleteById(id);
+    }
+
+    private void checkIfUserWorkoutExists(Long id) throws WorkoutNotFoundException {
+        UserWorkout userWorkout = userWorkoutRepository.findUserWorkoutById(id);
+        if(userWorkout == null){
+            throw new WorkoutNotFoundException(USERWOKOUT_DOES_NOT_EXISTS);
+        }
     }
 
     private void checkIfWorkoutExists(Long workoutId) throws WorkoutNotFoundException {

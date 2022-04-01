@@ -4,6 +4,7 @@ package com.gymsystem.gms.controller;
 import com.gymsystem.gms.exceptions.ExceptionHandling;
 import com.gymsystem.gms.exceptions.model.WorkoutDateException;
 import com.gymsystem.gms.exceptions.model.WorkoutExistException;
+import com.gymsystem.gms.exceptions.model.WorkoutIsFullException;
 import com.gymsystem.gms.exceptions.model.WorkoutNotFoundException;
 import com.gymsystem.gms.model.HttpResponse;
 import com.gymsystem.gms.model.User;
@@ -32,19 +33,19 @@ public class UserWorkoutController extends ExceptionHandling {
 
     @PostMapping("/add")
     public ResponseEntity<UserWorkout> jointWorkout(@RequestParam("userId") Long userId,
-                                                 @RequestParam("workoutId") Long workoutId) throws WorkoutNotFoundException {
+                                                 @RequestParam("workoutId") Long workoutId) throws WorkoutNotFoundException, WorkoutIsFullException {
         UserWorkout newUserWorkout = userWorkoutService.addUserToWorkout(userId,workoutId);
         return new ResponseEntity<>(newUserWorkout, OK);
     }
     @GetMapping("/list")
     public ResponseEntity<List<UserWorkout>> getAllUserWorkouts(@RequestParam("userId") Long userId) {
-        List<UserWorkout> userWorkouts = userWorkoutService.getUserWorkouts(userId);
+        List<UserWorkout> userWorkouts = userWorkoutService.getAllUserWorkouts(userId);
         return new ResponseEntity<>(userWorkouts, OK);
     }
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<HttpResponse> leaveWorkout(@PathVariable("id") Long id) throws WorkoutNotFoundException {
             userWorkoutService.deleteUserWorkout(id);
-        return response(OK, "WORKOUT_DELETED_SUCCESSFULLY");
+        return response(OK, "USER_LEFT_WORKOUT");
     }
 
     private ResponseEntity<HttpResponse> response(HttpStatus httpStatus, String message) {

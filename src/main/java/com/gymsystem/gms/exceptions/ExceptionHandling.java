@@ -6,7 +6,6 @@ import com.gymsystem.gms.model.HttpResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.web.ErrorProperties;
-import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +15,6 @@ import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.LockedException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.persistence.NoResultException;
@@ -82,10 +80,28 @@ public class ExceptionHandling extends ErrorProperties {
     public ResponseEntity<HttpResponse> workoutExistException(WorkoutExistException exception) {
         return createHttpResponse(BAD_REQUEST, exception.getMessage());
     }
+    @ExceptionHandler(MembershipTypeExistException.class)
+    public ResponseEntity<HttpResponse> membershipTypeExistException(MembershipTypeExistException exception) {
+        return createHttpResponse(BAD_REQUEST, exception.getMessage());
+    }
+    @ExceptionHandler(MembershipTypeNotFoundException.class)
+    public ResponseEntity<HttpResponse> membershipTypeNotFoundException(MembershipTypeNotFoundException exception) {
+        return createHttpResponse(BAD_REQUEST, exception.getMessage());
+    }
+    @ExceptionHandler(UserIsAlreadyInWorkoutException.class)
+    public ResponseEntity<HttpResponse> userIsAlreadyInWorkoutExceptionException(UserIsAlreadyInWorkoutException exception) {
+        return createHttpResponse(BAD_REQUEST, exception.getMessage());
+    }
     @ExceptionHandler(WorkoutNotFoundException.class)
     public ResponseEntity<HttpResponse> workoutExistException(WorkoutNotFoundException exception) {
         return createHttpResponse(BAD_REQUEST, exception.getMessage());
     }
+
+    @ExceptionHandler(WorkoutIsFullException.class)
+    public ResponseEntity<HttpResponse> workoutExistException(WorkoutIsFullException exception) {
+        return createHttpResponse(BAD_REQUEST, exception.getMessage());
+    }
+
     @ExceptionHandler(WorkoutDateException.class)
     public ResponseEntity<HttpResponse> workoutDateException(WorkoutDateException exception) {
         return createHttpResponse(BAD_REQUEST, exception.getMessage());
