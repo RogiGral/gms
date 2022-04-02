@@ -8,7 +8,7 @@ import java.util.Date;
 import java.util.List;
 
 public interface UserWorkoutService {
-    List<UserWorkout> getAllUserWorkouts(Long id);
-    UserWorkout addUserToWorkout(Long userId, Long workoutId) throws WorkoutNotFoundException, WorkoutIsFullException, UserIsAlreadyInWorkoutException;
+    List<UserWorkout> getAllUserWorkouts(String username);
+    UserWorkout addUserToWorkout(String username, Long workoutId) throws WorkoutNotFoundException, WorkoutIsFullException, UserIsAlreadyInWorkoutException;
     void deleteUserWorkout(Long id) throws WorkoutNotFoundException;
 }

@@ -21,12 +21,12 @@ public class UserContactDetailsImpl implements UserContactDetailsService {
     }
 
     @Override
-    public UserContactDetails addUserContactDetails(Long userId, String city, String street, String streetNumber, String flatNumber, String postCode, String phoneNumber) {
+    public UserContactDetails addUserContactDetails(String username, String city, String street, String streetNumber, String flatNumber, String postCode, String phoneNumber) {
         return null;
     }
 
     @Override
-    public UserContactDetails updateUserContactDetails(Long userId, String newCity, String newStreet, String newStreetNumber, String newFlatNumber, String newPostCode, String newPhoneNumber) {
+    public UserContactDetails updateUserContactDetails(String username, String newCity, String newStreet, String newStreetNumber, String newFlatNumber, String newPostCode, String newPhoneNumber) {
         return null;
     }
 

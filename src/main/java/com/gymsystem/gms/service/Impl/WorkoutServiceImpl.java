@@ -39,6 +39,9 @@ public class WorkoutServiceImpl implements WorkoutService {
         return workoutRepository.findAll();
     }
 
+
+    //Todo  sprawdzać czy trener nie ma jakiś zajęć w tych godzinach
+    //Todo sprawdzac czy sala nie jest zajęta w tych godzinach
     @Override
     public Workout createWorkout(String workoutName, String trainerUsername, String roomNumber,Integer capacity, Date workoutStartDate, Date workoutEndDate) throws WorkoutDateException, WorkoutExistException {
         checkIfTrainerExists(trainerUsername);
@@ -56,7 +59,8 @@ public class WorkoutServiceImpl implements WorkoutService {
         //wyslij mail do trenera odnosnie treningu; docelowo dodać do kalenarza
         return workout;
     }
-
+    // Todo do poprawy, co w przypadku kiedy poda się nowy workoutName a reszta będzie taka sama;
+    //  solution, można zablokowac zmienianie innych danych poza nazwą - nie zbyt pasuje ale zawsze coś
     @Override
     public Workout updateWorkout(String currentWorkoutName, String newWorkoutName, String newTrainerUsername, String newRoomNumber,Integer newCapacity,Integer newParticipantsNumber, Date newWorkoutStartDate, Date newWorkoutEndDate) throws WorkoutDateException, WorkoutExistException {
         checkIfTrainerExists(newTrainerUsername);

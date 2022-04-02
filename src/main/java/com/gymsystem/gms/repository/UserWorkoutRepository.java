@@ -11,7 +11,7 @@ import java.util.List;
 @Repository
 public interface UserWorkoutRepository extends JpaRepository<UserWorkout,Long> {
     @Query(value = "SELECT * FROM user_workout WHERE user_id = :id",nativeQuery = true)
-    List<UserWorkout> findAllByUserId(@Param("id") Long id);
+    List<UserWorkout> findAllByUserId(@Param("username") Long username);
 
     UserWorkout findUserWorkoutById(Long id);
     UserWorkout findUserWorkoutByUserIdAndWorkoutId(Long userId, Long workoutId);

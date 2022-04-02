@@ -2,10 +2,7 @@ package com.gymsystem.gms.controller;
 
 
 import com.gymsystem.gms.exceptions.ExceptionHandling;
-import com.gymsystem.gms.exceptions.model.WorkoutDateException;
-import com.gymsystem.gms.exceptions.model.WorkoutExistException;
-import com.gymsystem.gms.exceptions.model.WorkoutIsFullException;
-import com.gymsystem.gms.exceptions.model.WorkoutNotFoundException;
+import com.gymsystem.gms.exceptions.model.*;
 import com.gymsystem.gms.model.HttpResponse;
 import com.gymsystem.gms.model.User;
 import com.gymsystem.gms.model.UserWorkout;
@@ -25,21 +22,21 @@ import java.util.List;
 import static org.springframework.http.HttpStatus.OK;
 
 @RestController
-@RequestMapping(value ="/workout/user")
+@RequestMapping(value ="/user-workout")
 @AllArgsConstructor
 public class UserWorkoutController extends ExceptionHandling {
     @Autowired
     UserWorkoutService userWorkoutService;
 
     @PostMapping("/add")
-    public ResponseEntity<UserWorkout> jointWorkout(@RequestParam("userId") Long userId,
-                                                 @RequestParam("workoutId") Long workoutId) throws WorkoutNotFoundException, WorkoutIsFullException {
-        UserWorkout newUserWorkout = userWorkoutService.addUserToWorkout(userId,workoutId);
+    public ResponseEntity<UserWorkout> joinWorkout(@RequestParam("username") String username,
+                                                 @RequestParam("workoutId") Long workoutId) throws WorkoutNotFoundException, WorkoutIsFullException, UserIsAlreadyInWorkoutException {
+        UserWorkout newUserWorkout = userWorkoutService.addUserToWorkout(username,workoutId);
         return new ResponseEntity<>(newUserWorkout, OK);
     }
     @GetMapping("/list")
-    public ResponseEntity<List<UserWorkout>> getAllUserWorkouts(@RequestParam("userId") Long userId) {
-        List<UserWorkout> userWorkouts = userWorkoutService.getAllUserWorkouts(userId);
+    public ResponseEntity<List<UserWorkout>> getAllUserWorkouts(@RequestParam("username") String username) {
+        List<UserWorkout> userWorkouts = userWorkoutService.getAllUserWorkouts(username);
         return new ResponseEntity<>(userWorkouts, OK);
     }
     @DeleteMapping("/delete/{id}")
