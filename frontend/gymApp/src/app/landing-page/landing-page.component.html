@@ -1,22 +1,10 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title>Gym Main Page</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <link rel="stylesheet" type="text/css" media="screen" href="landing-page.component.css">
-
-
-</head>
-<body>
-
-<!-- Start Header  -->
 <header>
   <div class="container">
     <div class="logo">
       <a href="">Pakernia <span>Club</span></a>
     </div>
-    <a href="javascript:void(0)" class="ham-burger">
+    <a class="ham-burger">
       <span></span>
       <span></span>
     </a>
@@ -345,53 +333,6 @@
 </section>
 <!-- End Contact -->
 
-
-
-<!-- jquery -->
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-<script>
-  $(document).ready(function(){
-
-    $(".ham-burger, .nav ul li a").click(function(){
-
-      $(".nav").toggleClass("open")
-
-      $(".ham-burger").toggleClass("active");
-    })
-    $(".accordian-container").click(function(){
-      $(".accordian-container").children(".body").slideUp();
-      $(".accordian-container").removeClass("active")
-      $(".accordian-container").children(".head").children("span").removeClass("fa-angle-down").addClass("fa-angle-up")
-      $(this).children(".body").slideDown();
-      $(this).addClass("active")
-      $(this).children(".head").children("span").removeClass("fa-angle-up").addClass("fa-angle-down")
-    })
-
-    $(".nav ul li a, .go-down").click(function(event){
-      if(this.hash !== ""){
-
-        event.preventDefault();
-
-        var hash=this.hash;
-
-        $('html,body').animate({
-          scrollTop:$(hash).offset().top
-        },800 , function(){
-          window.location.hash=hash;
-        });
-
-        // add active class in navigation
-        $(".nav ul li a").removeClass("active")
-        $(this).addClass("active")
-      }
-    })
-  })
-
-</script>
-
-
-</body>
-</html>
 
 
 

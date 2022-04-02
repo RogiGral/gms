@@ -15,6 +15,7 @@ import { UserComponent } from './user/user.component';
 import { RegisterComponent } from './register/register.component';
 import {FormsModule} from "@angular/forms";
 import { LandingPageComponent } from './landing-page/landing-page.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({
   declarations: [
@@ -30,6 +31,7 @@ import { LandingPageComponent } from './landing-page/landing-page.component';
         HttpClientModule,
         NotificationModule,
         FormsModule,
+        BrowserAnimationsModule,
     ],
   providers: [NotificationService,AuthenticationService,UserService,
     {provide: HTTP_INTERCEPTORS, useClass:AuthInterceptor, multi: true}],
