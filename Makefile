@@ -20,6 +20,9 @@ help:
 up-dev: ## create and start services for development (API running on http://localhost:8000, frontend running on: http://localhost:3000)
 	docker-compose $(DEV_COMPOSE) up -d --build --remove-orphans $(containers)
 
+up-dev-show-log: ## create and start services for development (API running on http://localhost:8000, frontend running on: http://localhost:3000)
+	docker-compose $(DEV_COMPOSE) up --build --remove-orphans $(containers)
+
 pause-dev: ## pause development services (useful to save CPU)
 	docker-compose $(DEV_COMPOSE) pause $(containers)
 
