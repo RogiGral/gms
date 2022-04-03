@@ -1,0 +1,26 @@
+version: '3.9'
+
+services:
+  api:
+    ports:
+      - 8081:8081
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules # hack to not overwrite node_modules in container
+    ports:
+      - 3000:3000
+    environment:
+      - API_BASE_URL
+      - CHOKIDAR_USEPOLLING=true
+      # CHOKIDAR_USEPOLLING=true forces react app to use polling to watch file changes.
+      # It isn't the optimal solution. There is a significant delay for hot reloading and higher CPU usage.
+      # False is default. If hot reload works fine there is no need to set this env to true.
+
+  db:
+    ports:
+      - 5432:5432

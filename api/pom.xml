@@ -87,6 +87,7 @@
     </dependencies>
 
     <build>
+        <finalName>gms-project</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
