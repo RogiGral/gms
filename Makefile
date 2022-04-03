@@ -1,4 +1,4 @@
-.PHONY: help up-dev pause-dev start-dev stop-dev clean-dev build-dev restart-service-dev reload-service-dev up-stg pause-stg start-stg stop-stg clean-stg build-stg restart-service-stg
+.PHONY: help up-dev up-dev-show-logs pause-dev start-dev stop-dev clean-dev build-dev restart-service-dev reload-service-dev up-stg pause-stg start-stg stop-stg clean-stg build-stg restart-service-stg
 
 # docker-compose stacks
 DEV_COMPOSE=--file docker-compose.yml --file docker-compose_dev.yml
@@ -17,10 +17,10 @@ BRANCH := $(shell git rev-parse --abbrev-ref HEAD)
 help:
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 
-up-dev: ## create and start services for development (API running on http://localhost:8000, frontend running on: http://localhost:3000)
+up-dev: ## create and start services for development (API running on http://localhost:8081, frontend running on: http://localhost:3000)
 	docker-compose $(DEV_COMPOSE) up -d --build --remove-orphans $(containers)
 
-up-dev-show-log: ## create and start services for development (API running on http://localhost:8000, frontend running on: http://localhost:3000)
+up-dev-show-logs: ## create and start services for development and show container logs in terminal(API running on http://localhost:8081, frontend running on: http://localhost:3000)
 	docker-compose $(DEV_COMPOSE) up --build --remove-orphans $(containers)
 
 pause-dev: ## pause development services (useful to save CPU)

@@ -23,8 +23,6 @@ services:
       - ./persistent_data/log/nginx:/var/log/nginx/
     ports:
       - 1337:80
-    depends_on:
-      - api
     environment: 
       - API_BASE_URL
 
