@@ -23,4 +23,8 @@ You should run database and frontend in containers when working on BE features i
 
 ## When working on FE features
 
-I strongly recommend working on FE features fully in running docker containers. Frontend container should be accesible on `localhost:3000`. It has **HOT RELOAD** logic configured. Every change in the `src` folder will automatically cause the frontend to be rerendered. It is enough to run `make up-dev` to get db, api and frontend working and ready to use. From the frontend container's perspective api should be accessible on `localhost:8081`. When you want to add new dependencies to the frontend project, there are 2 ways. You may do it inside docker container by running `docker exec -it gms_frontend_1 bash -c "npm install --save <your-package>"` or add this dependency outside the frontend container and rebuild containers after that e.g with command `make clean-dev && make up-dev`.
+I strongly recommend working on FE features fully in running docker containers. Frontend container should be accesible on `localhost:3000`. It has **HOT RELOAD** logic configured. Every change in the `src` folder will automatically cause the frontend to be rerendered. It is enough to run `make up-dev` to get db, api and frontend working and ready to use. From the frontend container's perspective api should be accessible on `localhost:8081`. When you want to add new dependencies to the frontend project, there are 2 ways. You may do it inside docker container by running `docker exec -it gms_frontend_1 sh -c "npm install --save <your-package>"` or add this dependency outside the frontend container and rebuild containers after that e.g with command `make clean-dev && make up-dev`.
+
+## Other
+
+In case you will have a problem with permissions e.g owner and group has changed from your user to the root, you may use this command `sudo chown -R <user: e.g sebastian>:<group: e.g sebastian> <folder: e.g persistent_data>` to make this folder managable for you again.
