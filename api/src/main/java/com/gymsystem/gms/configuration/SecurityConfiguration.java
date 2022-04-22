@@ -79,8 +79,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
-        config.addAllowedOrigin("http://localhost:3000");
+        config.addAllowedOriginPattern("*");
         config.addAllowedHeader("*");
+        config.addAllowedMethod("*");
 
         // Necessary if JWT token is sent via header
         // Browser doesn't let client read custom headers unless they are manually exposed
