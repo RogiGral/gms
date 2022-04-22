@@ -1,2 +1,4 @@
 .env
 persistent_data
+.idea
+gms.iml
