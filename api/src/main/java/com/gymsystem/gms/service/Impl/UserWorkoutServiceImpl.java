@@ -57,7 +57,8 @@ public class UserWorkoutServiceImpl implements UserWorkoutService {
 
     private void checkIfUserEnterWorkout(String username, Long workoutId) throws UserIsAlreadyInWorkoutException {
         User user = userRepository.findUserByUsername(username);
-        UserWorkout userWorkout = userWorkoutRepository.findUserWorkoutByUserIdAndWorkoutId(user.getId(),workoutId);
+        Workout workout = workoutRepository.findWorkoutById(workoutId);
+        UserWorkout userWorkout = userWorkoutRepository.findUserWorkoutByUserIdAndWorkoutId(user,workout);
         if(userWorkout!=null){
             throw new UserIsAlreadyInWorkoutException(USER_IS_IN_WORKOUT);
         }

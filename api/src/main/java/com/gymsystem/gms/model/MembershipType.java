@@ -22,5 +22,4 @@ public class MembershipType {
     private Long id;
     private String name;
     private Long price;
-    private Integer monthlyPayment;
 }

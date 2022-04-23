@@ -1,6 +1,8 @@
 package com.gymsystem.gms.repository;
 
+import com.gymsystem.gms.model.User;
 import com.gymsystem.gms.model.UserWorkout;
+import com.gymsystem.gms.model.Workout;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -14,5 +16,5 @@ public interface UserWorkoutRepository extends JpaRepository<UserWorkout,Long> {
     List<UserWorkout> findAllByUserId(@Param("username") Long username);
 
     UserWorkout findUserWorkoutById(Long id);
-    UserWorkout findUserWorkoutByUserIdAndWorkoutId(Long userId, Long workoutId);
+    UserWorkout findUserWorkoutByUserIdAndWorkoutId(User user, Workout workout);
 }

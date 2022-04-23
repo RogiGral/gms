@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface MembershipTypeRepository extends JpaRepository<MembershipType,Long> {
-    MembershipType findMembershipTypeByNameAndPriceAndMonthlyPayment(String name, Long price, Integer monthlyPayment);
+    MembershipType findMembershipTypeByNameAndPrice(String name, Long price);
     MembershipType findMembershipTypeByName(String name);
     MembershipType findMembershipTypeById(Long membershipTypeId);
 }
