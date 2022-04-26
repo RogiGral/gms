@@ -1,5 +1,5 @@
-import * as React from 'react';
-import { styled, createTheme, ThemeProvider } from '@mui/material/styles';
+import React, { useEffect, useState } from 'react';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
@@ -16,15 +16,44 @@ import NotificationsIcon from '@mui/icons-material/Notifications';
 import AppBar from './components/AppBar';
 import Drawer from './components/Drawer';
 import DrawerList from './components/DrawerList';
+import { useAppSelector } from '../../reduxHooks';
+import { useRouteMatch } from 'react-router';
+import { Route, Switch } from 'react-router-dom';
 
 const drawerWidth: number = 240;
 
 const mdTheme = createTheme();
 
 export default function Dashboard() {
-  const [open, setOpen] = React.useState(true);
+  const { path, url } = useRouteMatch();
+  const [open, setOpen] = useState(true);
+  const user = useAppSelector(state => state.auth.user)!;
+
+  useEffect(() => {
+    console.log('path', path);
+  }, [path]);
+
   const toggleDrawer = () => {
     setOpen(!open);
+  };
+
+  const renderContent = () => {
+    return (
+      <Switch>
+        <Route exact path={`${path}/workout`}>
+          <div>Workouts</div>
+        </Route>
+        <Route exact path={`${path}/membership`}>
+          <div>membership</div>
+        </Route>
+        <Route exact path={`${path}/profile`}>
+          <div>profile</div>
+        </Route>
+        <Route exact path={`${path}/users`}>
+          <div>users</div>
+        </Route>
+      </Switch>
+    );
   };
 
   return (
@@ -80,7 +109,7 @@ export default function Dashboard() {
           </Toolbar>
           <Divider />
           <List component="nav">
-            <DrawerList />
+            <DrawerList userRole={user.role} />
           </List>
         </Drawer>
         <Box
@@ -98,7 +127,7 @@ export default function Dashboard() {
           <Toolbar />
           <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
             <Grid container spacing={3}>
-              {/* TUTAJ CONTENT */}
+              {renderContent()}
             </Grid>
           </Container>
         </Box>

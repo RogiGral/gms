@@ -1,4 +1,4 @@
-import { User } from '../api/models';
+import { User, UserRole } from '../api/models';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { LoginResponse } from '../api/requests/auth/responses';
 
@@ -24,6 +24,7 @@ export const authSlice = createSlice({
           ? new Date(action.payload.lastLoginDateDisplay)
           : null,
         joinDate: new Date(action.payload.joinDate),
+        role: action.payload.role as UserRole,
       };
     },
   },

@@ -68,7 +68,6 @@ function App() {
     console.log('rendering authorized routes');
     return (
       <>
-        <Route exact path="/dashboard" component={DashboardPage} />
         <Route exact path="/" component={LandingPage} />
         <Route
           exact
@@ -80,6 +79,7 @@ function App() {
           path="/register"
           render={() => <Redirect to="/dashboard" />}
         />
+        <Route path="/dashboard" component={DashboardPage} />
       </>
     );
   };

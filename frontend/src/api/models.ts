@@ -1,3 +1,10 @@
+export enum UserRole {
+  ROLE_USER = 'ROLE_USER',
+  ROLE_COACH = 'ROLE_COACH',
+  ROLE_ADMIN = 'ROLE_ADMIN',
+  // ROLE_SUPER_ADMIN = 'ROLE_SUPER_ADMIN',
+}
+
 export interface User {
   userId: string;
   firstName: string;
@@ -8,7 +15,7 @@ export interface User {
   lastLoginDate: Date | null;
   lastLoginDateDisplay: Date | null;
   joinDate: Date;
-  role: string;
+  role: UserRole;
   authorities: string[];
   notLocked: boolean;
   active: boolean;
