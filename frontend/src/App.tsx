@@ -9,8 +9,10 @@ import jwtDecode from 'jwt-decode';
 import { useMutation } from 'react-query';
 import Api from './api/Api';
 import { loadUser } from './reducers/authReducer';
+import PrivateRoute from './components/PrivateRoute';
 import ForgotPasswordPage from './pages/ForgotPasswordPage';
 import LandingPage from './pages/LandingPage';
+import DashboardPage from './pages/DashboardPage';
 
 function App() {
   const user = useAppSelector(state => state.auth.user);
@@ -46,23 +48,38 @@ function App() {
   }, []);
 
   const renderUnauthorizedRoutes = () => {
+    console.log('rendering unauthorized routes');
     return (
       <>
         <Route exact path="/" component={LandingPage} />
         <Route exact path="/login" component={LoginPage} />
         <Route exact path="/register" component={RegisterPage} />
         <Route exact path="/forgot-password" component={ForgotPasswordPage} />
-        {/*<Redirect from="*" to="/login" />*/}
+        <Route
+          exact
+          path="/dashboard"
+          render={() => <Redirect to="/login" />}
+        />
       </>
     );
   };
 
   const renderAuthorizedRoutes = () => {
+    console.log('rendering authorized routes');
     return (
       <>
-        <Redirect exact from="/login" to="/" />
-        <Redirect exact from="/register" to="/" />
-        <Route exact path="/" component={() => <div>Authorized!</div>} />
+        <Route exact path="/dashboard" component={DashboardPage} />
+        <Route exact path="/" component={LandingPage} />
+        <Route
+          exact
+          path="/login"
+          render={() => <Redirect to="/dashboard" />}
+        />
+        <Route
+          exact
+          path="/register"
+          render={() => <Redirect to="/dashboard" />}
+        />
       </>
     );
   };
