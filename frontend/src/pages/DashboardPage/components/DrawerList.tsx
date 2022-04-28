@@ -20,8 +20,8 @@ interface DrawerListItem {
   path: string;
 }
 
-// user - workout i membership
-// trener - users, workouts, swój profil
+// user - workout i membership, profil
+// trener - users, workouts, profil
 // admin - users, workouts, memberships
 
 const items: { [key in UserRole]: DrawerListItem[] } = {
@@ -35,6 +35,11 @@ const items: { [key in UserRole]: DrawerListItem[] } = {
       icon: <CreditCardIcon />,
       text: 'Membership',
       path: 'membership',
+    },
+    {
+      icon: <DashboardIcon />,
+      text: 'Profile',
+      path: 'profile',
     },
   ],
   ROLE_COACH: [

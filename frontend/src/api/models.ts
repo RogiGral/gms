@@ -20,3 +20,14 @@ export interface User {
   notLocked: boolean;
   active: boolean;
 }
+
+export interface Workout {
+  id: string;
+  workoutName: string;
+  trainerUsername: string;
+  roomNumber: string;
+  workoutStartDate: Date;
+  workoutEndDate: Date;
+  capacity: number;
+  participantsNumber: number;
+}

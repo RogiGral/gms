@@ -12,13 +12,13 @@ import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-import NotificationsIcon from '@mui/icons-material/Notifications';
 import AppBar from './components/AppBar';
 import Drawer from './components/Drawer';
 import DrawerList from './components/DrawerList';
 import { useAppSelector } from '../../reduxHooks';
 import { useRouteMatch } from 'react-router';
 import { Route, Switch } from 'react-router-dom';
+import Workout from './components/Workout';
 
 const drawerWidth: number = 240;
 
@@ -29,10 +29,6 @@ export default function Dashboard() {
   const [open, setOpen] = useState(true);
   const user = useAppSelector(state => state.auth.user)!;
 
-  useEffect(() => {
-    console.log('path', path);
-  }, [path]);
-
   const toggleDrawer = () => {
     setOpen(!open);
   };
@@ -41,7 +37,7 @@ export default function Dashboard() {
     return (
       <Switch>
         <Route exact path={`${path}/workout`}>
-          <div>Workouts</div>
+          <Workout />
         </Route>
         <Route exact path={`${path}/membership`}>
           <div>membership</div>
@@ -87,11 +83,6 @@ export default function Dashboard() {
             >
               Dashboard
             </Typography>
-            <IconButton color="inherit">
-              <Badge badgeContent={4} color="secondary">
-                <NotificationsIcon />
-              </Badge>
-            </IconButton>
           </Toolbar>
         </AppBar>
         <Drawer variant="permanent" open={open} drawerWidth={drawerWidth}>
