@@ -19,6 +19,7 @@ import { useAppSelector } from '../../reduxHooks';
 import { useRouteMatch } from 'react-router';
 import { Route, Switch } from 'react-router-dom';
 import Workout from './components/Workout';
+import Membership from './components/Membership';
 
 const drawerWidth: number = 240;
 
@@ -40,7 +41,7 @@ export default function Dashboard() {
           <Workout />
         </Route>
         <Route exact path={`${path}/membership`}>
-          <div>membership</div>
+          <Membership />
         </Route>
         <Route exact path={`${path}/profile`}>
           <div>profile</div>

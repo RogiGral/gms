@@ -16,6 +16,7 @@ import {
 } from '../../../reducers/workoutsReducer';
 import Button from '@mui/material/Button';
 import { toast } from 'react-toastify';
+import WorkoutsTable from './WorkoutsTable';
 
 export default function Workout() {
   const dispatch = useAppDispatch();
@@ -28,17 +29,17 @@ export default function Workout() {
 
   const userWorkoutIdsQuery = useQuery(
     'userWorkoutIds',
-    () => Workouts.getWorkoutsForUser(user.username),
+    () => Workouts.getWorkoutsForUser(user.id),
     {
       onSuccess: data => {
-        dispatch(loadUserWorkouts(data.map(workout => workout.id)));
+        dispatch(loadUserWorkouts(data.map(resp => resp.workoutId.id)));
       },
     },
   );
 
   const joinWorkoutMutation = useMutation(
-    ({ username, workoutId }: { username: string; workoutId: string }) => {
-      return Workouts.joinWorkout(username, workoutId);
+    ({ userId, workoutId }: { userId: number; workoutId: number }) => {
+      return Workouts.joinWorkout(userId, workoutId);
     },
     {
       onError: (error: Error) => {
@@ -54,8 +55,8 @@ export default function Workout() {
   );
 
   const leaveWorkoutMutation = useMutation(
-    ({ workoutId }: { workoutId: string }) => {
-      return Workouts.leaveWorkout(workoutId);
+    ({ userId, workoutId }: { userId: number; workoutId: number }) => {
+      return Workouts.leaveWorkout(userId, workoutId);
     },
     {
       onError: (error: Error) => {
@@ -70,62 +71,7 @@ export default function Workout() {
     },
   );
 
-  const renderWorkoutsTableRows = (
-    workoutsArr: WorkoutType[],
-    actionButtonOnClick: (workoutId: string) => void,
-  ) => {
-    return workoutsArr.map(workout => (
-      <TableRow
-        key={workout.id}
-        sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-      >
-        <TableCell component="th" scope="row">
-          {workout.workoutName}
-        </TableCell>
-        <TableCell align="right">{workout.roomNumber}</TableCell>
-        <TableCell align="right">
-          {workout.workoutStartDate.toLocaleTimeString()}
-        </TableCell>
-        <TableCell align="right">
-          {workout.workoutEndDate.toLocaleDateString()}
-        </TableCell>
-        <TableCell align="right">{workout.participantsNumber}</TableCell>
-        <TableCell align="right">
-          <Button
-            variant="contained"
-            onClick={() => actionButtonOnClick(workout.id)}
-          >
-            Join
-          </Button>
-        </TableCell>
-      </TableRow>
-    ));
-  };
-
-  const renderWorkoutsTable = (
-    workoutsArr: WorkoutType[],
-    actionButtonOnClick: (workoutId: string) => void,
-  ) => (
-    <TableContainer component={Paper}>
-      <Table sx={{ minWidth: 650 }} aria-label="simple table">
-        <TableHead>
-          <TableRow>
-            <TableCell>Workout name</TableCell>
-            <TableCell align="right">Room number</TableCell>
-            <TableCell align="right">Start date</TableCell>
-            <TableCell align="right">End date</TableCell>
-            <TableCell align="right">Participants number</TableCell>
-            <TableCell align="right" />
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {renderWorkoutsTableRows(workoutsArr, actionButtonOnClick)}
-        </TableBody>
-      </Table>
-    </TableContainer>
-  );
-
-  const renderAllWorkouts = (workoutsArr: WorkoutType[]) => {
+  const renderAllWorkouts = () => {
     if (workoutsQuery.isLoading && !workoutsQuery.isRefetching) {
       return <div>Loading workouts...</div>;
     }
@@ -138,15 +84,26 @@ export default function Workout() {
       return <div>There is no workouts.</div>;
     }
 
-    return renderWorkoutsTable(workoutsArr, workoutId => {
-      joinWorkoutMutation.mutate({
-        username: user.username,
-        workoutId,
-      });
-    });
+    return (
+      <WorkoutsTable
+        workouts={workouts}
+        tableName="Available workouts"
+        renderActionButton={workoutId => (
+          <Button
+            variant="contained"
+            disabled={userWorkoutIds.includes(workoutId)}
+            onClick={() =>
+              joinWorkoutMutation.mutate({ workoutId, userId: user.id })
+            }
+          >
+            {userWorkoutIds.includes(workoutId) ? 'Joined' : 'Join'}
+          </Button>
+        )}
+      />
+    );
   };
 
-  const renderUserWorkouts = (workoutsArr: WorkoutType[]) => {
+  const renderUserWorkouts = () => {
     if (userWorkoutIdsQuery.isLoading && !userWorkoutIdsQuery.isRefetching) {
       return <div>Loading workouts...</div>;
     }
@@ -159,17 +116,35 @@ export default function Workout() {
       return <div>You don't have any workouts.</div>;
     }
 
-    return renderWorkoutsTable(workoutsArr, workoutId => {
-      leaveWorkoutMutation.mutate({ workoutId });
-    });
+    return (
+      <WorkoutsTable
+        workouts={workouts.filter(({ id }) => userWorkoutIds.includes(id))}
+        tableName="Your workouts"
+        renderActionButton={workoutId => (
+          <Button
+            variant="contained"
+            color="error"
+            onClick={() =>
+              leaveWorkoutMutation.mutate({ workoutId, userId: user.id })
+            }
+          >
+            Leave
+          </Button>
+        )}
+      />
+    );
   };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column' }}>
-      {renderAllWorkouts(workouts)}
-      {renderUserWorkouts(
-        workouts.filter(({ id }) => userWorkoutIds.includes(id)),
-      )}
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        width: '100%',
+      }}
+    >
+      {renderAllWorkouts()}
+      {renderUserWorkouts()}
     </div>
   );
 }

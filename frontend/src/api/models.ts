@@ -6,6 +6,7 @@ export enum UserRole {
 }
 
 export interface User {
+  id: number;
   userId: string;
   firstName: string;
   lastName: string;
@@ -22,7 +23,7 @@ export interface User {
 }
 
 export interface Workout {
-  id: string;
+  id: number;
   workoutName: string;
   trainerUsername: string;
   roomNumber: string;
@@ -30,4 +31,11 @@ export interface Workout {
   workoutEndDate: Date;
   capacity: number;
   participantsNumber: number;
+}
+
+export interface Membership {
+  id: number;
+  monthlyPayment: number;
+  name: string;
+  price: number;
 }

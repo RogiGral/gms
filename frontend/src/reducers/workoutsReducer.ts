@@ -1,10 +1,13 @@
 import { Workout } from '../api/models';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { GetWorkoutsForUserResponse } from '../api/requests/workouts/responses';
+import {
+  GetWorkoutsForUserResponse,
+  GetWorkoutsResponse,
+} from '../api/requests/workouts/responses';
 
 export interface WorkoutsState {
   workouts: Workout[];
-  userWorkoutIds: string[];
+  userWorkoutIds: number[];
 }
 
 const initialState: WorkoutsState = {
@@ -16,17 +19,15 @@ export const workoutsSlice = createSlice({
   name: 'workouts',
   initialState,
   reducers: {
-    loadWorkouts: (
-      state,
-      action: PayloadAction<GetWorkoutsForUserResponse>,
-    ) => {
+    loadWorkouts: (state, action: PayloadAction<GetWorkoutsResponse>) => {
       state.workouts = action.payload.map(workout => ({
         ...workout,
         workoutStartDate: new Date(workout.workoutStartDate),
         workoutEndDate: new Date(workout.workoutEndDate),
       }));
     },
-    loadUserWorkouts: (state, action: PayloadAction<string[]>) => {
+    loadUserWorkouts: (state, action: PayloadAction<number[]>) => {
+      console.log('payload:', action);
       state.userWorkoutIds = action.payload;
     },
   },
