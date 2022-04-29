@@ -55,7 +55,7 @@ public class WorkoutController extends ExceptionHandling {
     }
 
     @GetMapping("/list")
-    public ResponseEntity<List<Workout>> getAllUsers() {
+    public ResponseEntity<List<Workout>> getAllWorkouts() {
         List<Workout> workouts = workoutService.getWorkouts();
         return new ResponseEntity<>(workouts, OK);
     }

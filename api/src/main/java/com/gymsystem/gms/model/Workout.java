@@ -21,7 +21,6 @@ public class Workout {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(nullable = false, updatable = false)
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private Long id;
     private String workoutName;
     private String trainerUsername;
