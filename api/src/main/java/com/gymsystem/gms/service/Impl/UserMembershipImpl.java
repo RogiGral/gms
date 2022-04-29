@@ -35,10 +35,10 @@ public class UserMembershipImpl implements UserMembershipService {
 
 
     @Override
-    public UserMembership getUserMembership(String username) throws UserNotFoundException, UserMembershipException {
-        User user = checkIfUserExist(username);
+    public UserMembership getUserMembership(Long userId) throws UserNotFoundException, UserMembershipException {
+        User user = checkIfUserExist(userId);
         if(user == null){
-            throw new UserNotFoundException(NO_USER_FOUND+"by username "+username);
+            throw new UserNotFoundException(NO_USER_FOUND+"by id: "+userId);
         }
         UserMembership userMembership = userMembershipRepository.getUserMembershipByUserId(user);
         if(userMembership == null){
@@ -48,9 +48,9 @@ public class UserMembershipImpl implements UserMembershipService {
     }
 
     @Override
-    public UserMembership addUserMembership(String username, String membershipTypeName) throws MembershipTypeNotFoundException, UserNotFoundException, UserMembershipException {
-        User user = checkIfUserExist(username);
-        MembershipType membershipType = checkIfMembershipTypeExist(membershipTypeName);
+    public UserMembership addUserMembership(Long userId, Long membershipTypeId) throws MembershipTypeNotFoundException, UserNotFoundException, UserMembershipException {
+        User user = checkIfUserExist(userId);
+        MembershipType membershipType = checkIfMembershipTypeExist(membershipTypeId);
         checkIfUserHasMembership(user);
         UserMembership userMembership = new UserMembership();
         userMembership.setUserId(user);
@@ -68,16 +68,16 @@ public class UserMembershipImpl implements UserMembershipService {
         userMembershipRepository.deleteUserMembershipByUserId(user);
     }
 
-    private MembershipType checkIfMembershipTypeExist(String membershipTypeName) throws MembershipTypeNotFoundException {
-        MembershipType membershipType = membershipTypeRepository.findMembershipTypeByName(membershipTypeName);
+    private MembershipType checkIfMembershipTypeExist(Long membershipTypeId) throws MembershipTypeNotFoundException {
+        MembershipType membershipType = membershipTypeRepository.findMembershipTypeById(membershipTypeId);
         if(membershipType == null){
             throw new MembershipTypeNotFoundException(MEMBERSHIP_TYPE_NOT_FOUND);
         }
         return membershipType;
     }
 
-    private User checkIfUserExist(String username) throws UserNotFoundException {
-        User user = userRepository.findUserByUsername(username);
+    private User checkIfUserExist(Long userId) throws UserNotFoundException {
+        User user = userRepository.findUserById(userId);
         if(user ==  null){
             throw new UserNotFoundException(NO_USER_FOUND);
         }

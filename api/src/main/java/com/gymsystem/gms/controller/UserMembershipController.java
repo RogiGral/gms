@@ -24,14 +24,14 @@ public class UserMembershipController extends ExceptionHandling {
     UserMembershipService userMembershipService;
 
     @PostMapping("/add")
-    public ResponseEntity<UserMembership> assignUserToMembership(@RequestParam("username") String username,
-                                                                 @RequestParam("membershipTypeName") String membershipTypeName) throws UserNotFoundException, UserMembershipException, MembershipTypeNotFoundException {
-        UserMembership userMembership = userMembershipService.addUserMembership(username,membershipTypeName);
+    public ResponseEntity<UserMembership> assignUserToMembership(@RequestParam("userId") Long userId,
+                                                                 @RequestParam("membershipTypeId") Long membershipTypeId) throws UserNotFoundException, UserMembershipException, MembershipTypeNotFoundException {
+        UserMembership userMembership = userMembershipService.addUserMembership(userId,membershipTypeId);
         return new ResponseEntity<>(userMembership, OK);
     }
     @GetMapping("/list")
-    public ResponseEntity<UserMembership> getUserMembership(@RequestParam("username") String username) throws UserNotFoundException, UserMembershipException {
-        UserMembership userMembership = userMembershipService.getUserMembership(username);
+    public ResponseEntity<UserMembership> getUserMembership(@RequestParam("userId") Long userId) throws UserNotFoundException, UserMembershipException {
+        UserMembership userMembership = userMembershipService.getUserMembership(userId);
         return new ResponseEntity<>(userMembership, OK);
     }
     @DeleteMapping("/delete/{id}")

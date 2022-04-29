@@ -6,7 +6,7 @@ import com.gymsystem.gms.exceptions.model.UserNotFoundException;
 import com.gymsystem.gms.model.UserMembership;
 
 public interface UserMembershipService {
-    UserMembership getUserMembership(String username) throws UserNotFoundException, UserMembershipException;
-    UserMembership addUserMembership(String username, String membershipTypeName) throws MembershipTypeNotFoundException, UserNotFoundException, UserMembershipException;
+    UserMembership getUserMembership(Long userId) throws UserNotFoundException, UserMembershipException;
+    UserMembership addUserMembership(Long userId, Long membershipTypeId) throws MembershipTypeNotFoundException, UserNotFoundException, UserMembershipException;
     void deleteUserMembership(Long userId) throws UserNotFoundException;
 }

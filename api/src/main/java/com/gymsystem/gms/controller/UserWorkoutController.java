@@ -29,19 +29,19 @@ public class UserWorkoutController extends ExceptionHandling {
     UserWorkoutService userWorkoutService;
 
     @PostMapping("/add")
-    public ResponseEntity<UserWorkout> joinWorkout(@RequestParam("username") String username,
+    public ResponseEntity<UserWorkout> joinWorkout(@RequestParam("userId") Long userId,
                                                  @RequestParam("workoutId") Long workoutId) throws WorkoutNotFoundException, WorkoutIsFullException, UserIsAlreadyInWorkoutException {
-        UserWorkout newUserWorkout = userWorkoutService.addUserToWorkout(username,workoutId);
+        UserWorkout newUserWorkout = userWorkoutService.addUserToWorkout(userId,workoutId);
         return new ResponseEntity<>(newUserWorkout, OK);
     }
     @GetMapping("/list")
-    public ResponseEntity<List<UserWorkout>> getAllUserWorkouts(@RequestParam("username") String username) {
-        List<UserWorkout> userWorkouts = userWorkoutService.getAllUserWorkouts(username);
+    public ResponseEntity<List<UserWorkout>> getAllUserWorkouts(@RequestParam("userId") Long userId) {
+        List<UserWorkout> userWorkouts = userWorkoutService.getAllUserWorkouts(userId);
         return new ResponseEntity<>(userWorkouts, OK);
     }
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<HttpResponse> leaveWorkout(@PathVariable("id") Long id) throws WorkoutNotFoundException {
-            userWorkoutService.deleteUserWorkout(id);
+    public ResponseEntity<HttpResponse> leaveWorkout(@PathVariable("userId") Long userId) throws WorkoutNotFoundException {
+            userWorkoutService.deleteUserWorkout(userId);
         return response(OK, "USER_LEFT_WORKOUT");
     }
 

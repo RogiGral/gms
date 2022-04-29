@@ -36,17 +36,16 @@ public class UserWorkoutServiceImpl implements UserWorkoutService {
     }
 
     @Override
-    public List<UserWorkout> getAllUserWorkouts(String username) {
-        User user = userRepository.findUserByUsername(username);
-        return userWorkoutRepository.findAllByUserId(user.getId());
+    public List<UserWorkout> getAllUserWorkouts(Long userId) {
+        return userWorkoutRepository.findAllByUserId(userId);
     }
 
     @Override
-    public UserWorkout addUserToWorkout(String username, Long workoutId) throws WorkoutNotFoundException, WorkoutIsFullException, UserIsAlreadyInWorkoutException {
-        User user = checkIfUserExists(username);
+    public UserWorkout addUserToWorkout(Long userId, Long workoutId) throws WorkoutNotFoundException, WorkoutIsFullException, UserIsAlreadyInWorkoutException {
+        User user = checkIfUserExists(userId);
         checkIfWorkoutExists(workoutId);
         checkIfWorkoutIsFull(workoutId);
-        checkIfUserEnterWorkout(username,workoutId);
+        checkIfUserEnterWorkout(userId,workoutId);
         UserWorkout userWorkout = new UserWorkout();
         userWorkout.setUserId(user);
         userWorkout.setWorkoutId(workoutRepository.findWorkoutById(workoutId));
@@ -55,8 +54,8 @@ public class UserWorkoutServiceImpl implements UserWorkoutService {
         return userWorkout;
     }
 
-    private void checkIfUserEnterWorkout(String username, Long workoutId) throws UserIsAlreadyInWorkoutException {
-        User user = userRepository.findUserByUsername(username);
+    private void checkIfUserEnterWorkout(Long userId, Long workoutId) throws UserIsAlreadyInWorkoutException {
+        User user = userRepository.findUserById(userId);
         Workout workout = workoutRepository.findWorkoutById(workoutId);
         UserWorkout userWorkout = userWorkoutRepository.findUserWorkoutByUserIdAndWorkoutId(user,workout);
         if(userWorkout!=null){
@@ -96,10 +95,10 @@ public class UserWorkoutServiceImpl implements UserWorkoutService {
        }
     }
 
-    private User checkIfUserExists(String username) {
-        User user = userRepository.findUserByUsername(username);
+    private User checkIfUserExists(Long userId) {
+        User user = userRepository.findUserById(userId);
         if(user == null){
-            throw new UsernameNotFoundException("No user found by id: "+username);
+            throw new UsernameNotFoundException("No user found by id: "+userId);
         }
         return user;
     }
