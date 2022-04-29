@@ -88,8 +88,16 @@ public class ExceptionHandling extends ErrorProperties {
     public ResponseEntity<HttpResponse> membershipTypeNotFoundException(MembershipTypeNotFoundException exception) {
         return createHttpResponse(BAD_REQUEST, exception.getMessage());
     }
+    @ExceptionHandler(MembershipTypeNameNotUniqueException.class)
+    public ResponseEntity<HttpResponse> membershipTypeNameNotUniqueException(MembershipTypeNameNotUniqueException exception) {
+        return createHttpResponse(BAD_REQUEST, exception.getMessage());
+    }
     @ExceptionHandler(UserIsAlreadyInWorkoutException.class)
-    public ResponseEntity<HttpResponse> userIsAlreadyInWorkoutExceptionException(UserIsAlreadyInWorkoutException exception) {
+    public ResponseEntity<HttpResponse> userIsAlreadyInWorkoutException(UserIsAlreadyInWorkoutException exception) {
+        return createHttpResponse(BAD_REQUEST, exception.getMessage());
+    }
+    @ExceptionHandler(UserMembershipException.class)
+    public ResponseEntity<HttpResponse> userMembershipException(UserMembershipException exception) {
         return createHttpResponse(BAD_REQUEST, exception.getMessage());
     }
     @ExceptionHandler(WorkoutNotFoundException.class)

@@ -1,17 +1,18 @@
 package com.gymsystem.gms.service.Impl;
 
 import com.gymsystem.gms.exceptions.model.MembershipTypeExistException;
+import com.gymsystem.gms.exceptions.model.MembershipTypeNameNotUniqueException;
 import com.gymsystem.gms.exceptions.model.MembershipTypeNotFoundException;
 import com.gymsystem.gms.model.MembershipType;
 import com.gymsystem.gms.repository.MembershipTypeRepository;
 import com.gymsystem.gms.service.MembershipTypeService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
 
-import static com.gymsystem.gms.constraints.MembershipType.MEMBERSHIP_TYPE_ALREADY_EXISTS;
-import static com.gymsystem.gms.constraints.MembershipType.MEMBERSHIP_TYPE_NOT_FOUND;
+import static com.gymsystem.gms.constraints.MembershipType.*;
 
 @Service
 @Transactional
@@ -19,28 +20,32 @@ public class MembershipTypeImpl implements MembershipTypeService {
 
     MembershipTypeRepository membershipTypeRepository;
 
+    @Autowired
+    public MembershipTypeImpl(MembershipTypeRepository membershipTypeRepository) {
+        this.membershipTypeRepository = membershipTypeRepository;
+    }
+
     @Override
     public List<MembershipType> getMembershipTypes() {
         return membershipTypeRepository.findAll();
     }
 
     @Override
-    public MembershipType addMembershipType(String name, Long price, Integer monthlyPayment) throws MembershipTypeExistException {
-        checkIfMembershipTypeExists(name,price,monthlyPayment);
-        MembershipType membershipType = new MembershipType();
+    public MembershipType addMembershipType(String name, Long price) throws MembershipTypeExistException, MembershipTypeNameNotUniqueException {
+        checkIfNameIsUnique(name);
+        MembershipType membershipType = checkIfMembershipTypeExists(name,price);
         membershipType.setName(name);
         membershipType.setPrice(price);
-        membershipType.setMonthlyPayment(monthlyPayment);
         membershipTypeRepository.save(membershipType);
-        return null;
+        return membershipType;
     }
 
     @Override
-    public MembershipType updateMembershipType(String oldName, String newName, Long newPrice, Integer newMonthlyPayment) throws MembershipTypeNotFoundException {
+    public MembershipType updateMembershipType(String oldName, String newName, Long newPrice) throws MembershipTypeNotFoundException, MembershipTypeNameNotUniqueException {
+        checkIfNameIsUnique(newName);
         MembershipType membershipType = findMembershipTypeByName(oldName);
         membershipType.setName(newName);
         membershipType.setPrice(newPrice);
-        membershipType.setMonthlyPayment(newMonthlyPayment);
         membershipTypeRepository.save(membershipType);
         return membershipType;
     }
@@ -60,10 +65,20 @@ public class MembershipTypeImpl implements MembershipTypeService {
     }
 
 
-    private void checkIfMembershipTypeExists(String name, Long price, Integer monthlyPayment) throws MembershipTypeExistException {
-        MembershipType membershipType = membershipTypeRepository.findMembershipTypeByNameAndPriceAndMonthlyPayment(name,price,monthlyPayment);
+    private MembershipType checkIfMembershipTypeExists(String name, Long price) throws MembershipTypeExistException {
+        MembershipType membershipType = membershipTypeRepository.findMembershipTypeByNameAndPrice(name,price);
         if(membershipType!=null){
             throw new MembershipTypeExistException(MEMBERSHIP_TYPE_ALREADY_EXISTS);
         }
+        else{
+            return new MembershipType();
+        }
+    }
+    private void checkIfNameIsUnique(String name) throws MembershipTypeNameNotUniqueException {
+        MembershipType membershipType = membershipTypeRepository.findMembershipTypeByName(name);
+        if(membershipType !=  null){
+            throw new MembershipTypeNameNotUniqueException(MEMBERSHIP_NAME_IS_NOT_UNIQUE);
+        }
+
     }
 }

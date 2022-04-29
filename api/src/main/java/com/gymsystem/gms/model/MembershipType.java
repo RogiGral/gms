@@ -18,9 +18,7 @@ public class MembershipType {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(nullable = false, updatable = false)
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private Long id;
     private String name;
     private Long price;
-    private Integer monthlyPayment;
 }

@@ -19,7 +19,6 @@ public class UserWorkout {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(nullable = false, updatable = false)
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private Long id;
     @JoinColumn(name = "userId", referencedColumnName = "id")
     @ManyToOne(optional = false,fetch = FetchType.EAGER)
