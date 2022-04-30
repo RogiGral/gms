@@ -10,10 +10,16 @@ import com.gymsystem.gms.repository.MembershipTypeRepository;
 import com.gymsystem.gms.repository.UserMembershipRepository;
 import com.gymsystem.gms.repository.UserRepository;
 import com.gymsystem.gms.service.UserMembershipService;
+import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Calendar;
+import java.util.Date;
 
 import static com.gymsystem.gms.constraints.MembershipType.*;
 import static com.gymsystem.gms.constraints.UserImplConstant.NO_USER_FOUND;
@@ -42,7 +48,7 @@ public class UserMembershipImpl implements UserMembershipService {
         }
         UserMembership userMembership = userMembershipRepository.getUserMembershipByUserId(user);
         if(userMembership == null){
-            throw new UserMembershipException(USER_HAS_NO_MEMBERSHIP);
+            return null;
         }
         return userMembership;
     }
@@ -55,6 +61,12 @@ public class UserMembershipImpl implements UserMembershipService {
         UserMembership userMembership = new UserMembership();
         userMembership.setUserId(user);
         userMembership.setMembershipTypeId(membershipType);
+
+        Date startDt = new Date();
+        Date endDt = DateUtils.addMonths(startDt,membershipType.getNumberOfMonths());
+
+        userMembership.setStartDate(startDt);
+        userMembership.setEndDate(endDt);
         userMembershipRepository.save(userMembership);
         return userMembership;
     }

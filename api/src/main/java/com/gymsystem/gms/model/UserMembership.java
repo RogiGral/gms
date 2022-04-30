@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.Date;
 
 
 @Entity
@@ -27,4 +28,7 @@ public class UserMembership {
     @JoinColumn(name = "membershipTypeId", referencedColumnName = "id")
     @ManyToOne(optional = false,fetch = FetchType.EAGER)
     private MembershipType membershipTypeId;
+
+    private Date startDate;
+    private Date endDate;
 }
