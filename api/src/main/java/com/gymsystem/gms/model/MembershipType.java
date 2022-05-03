@@ -1,12 +1,12 @@
 package com.gymsystem.gms.model;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.Date;
 
 @Entity
 @Getter
@@ -21,4 +21,7 @@ public class MembershipType {
     private Long id;
     private String name;
     private Long price;
+    private Integer numberOfMonths;
+
+
 }

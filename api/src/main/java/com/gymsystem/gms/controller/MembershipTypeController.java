@@ -35,15 +35,17 @@ public class MembershipTypeController extends ExceptionHandling {
 
     @PostMapping("/add")
     public ResponseEntity<MembershipType> addNewMembershipType( @RequestParam("name") String name,
-                                                                @RequestParam("price") Long price) throws MembershipTypeExistException, MembershipTypeNameNotUniqueException {
-        MembershipType membershipType = membershipTypeService.addMembershipType(name,price);
+                                                                @RequestParam("price") Long price,
+                                                                @RequestParam("numberOfMonths")Integer numberOfMonths) throws MembershipTypeExistException, MembershipTypeNameNotUniqueException {
+        MembershipType membershipType = membershipTypeService.addMembershipType(name,price,numberOfMonths);
         return new ResponseEntity<>(membershipType, OK);
     }
     @PostMapping("/update")
     public ResponseEntity<MembershipType> updateMembershipType( @RequestParam("oldName") String oldName,
                                                                 @RequestParam("newName") String newName,
-                                                                @RequestParam("newPrice") Long newPrice) throws MembershipTypeNotFoundException, MembershipTypeNameNotUniqueException {
-        MembershipType membershipType = membershipTypeService.updateMembershipType(oldName,newName,newPrice);
+                                                                @RequestParam("newPrice") Long newPrice,
+                                                                @RequestParam("numberOfMonths")Integer numberOfMonths) throws MembershipTypeNotFoundException, MembershipTypeNameNotUniqueException {
+        MembershipType membershipType = membershipTypeService.updateMembershipType(oldName,newName,newPrice,numberOfMonths);
         return new ResponseEntity<>(membershipType, OK);
     }
     @DeleteMapping("/delete/{id}")

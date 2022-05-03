@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import static com.gymsystem.gms.constraints.MembershipType.*;
@@ -31,21 +33,23 @@ public class MembershipTypeImpl implements MembershipTypeService {
     }
 
     @Override
-    public MembershipType addMembershipType(String name, Long price) throws MembershipTypeExistException, MembershipTypeNameNotUniqueException {
+    public MembershipType addMembershipType(String name, Long price, Integer numberOfMonths) throws MembershipTypeExistException, MembershipTypeNameNotUniqueException {
         checkIfNameIsUnique(name);
         MembershipType membershipType = checkIfMembershipTypeExists(name,price);
         membershipType.setName(name);
         membershipType.setPrice(price);
+        membershipType.setNumberOfMonths(numberOfMonths);
         membershipTypeRepository.save(membershipType);
         return membershipType;
     }
 
     @Override
-    public MembershipType updateMembershipType(String oldName, String newName, Long newPrice) throws MembershipTypeNotFoundException, MembershipTypeNameNotUniqueException {
+    public MembershipType updateMembershipType(String oldName, String newName, Long newPrice, Integer newNumberOfMonths ) throws MembershipTypeNotFoundException, MembershipTypeNameNotUniqueException {
         checkIfNameIsUnique(newName);
         MembershipType membershipType = findMembershipTypeByName(oldName);
         membershipType.setName(newName);
         membershipType.setPrice(newPrice);
+        membershipType.setNumberOfMonths(newNumberOfMonths);
         membershipTypeRepository.save(membershipType);
         return membershipType;
     }
@@ -79,6 +83,5 @@ public class MembershipTypeImpl implements MembershipTypeService {
         if(membershipType !=  null){
             throw new MembershipTypeNameNotUniqueException(MEMBERSHIP_NAME_IS_NOT_UNIQUE);
         }
-
     }
 }
