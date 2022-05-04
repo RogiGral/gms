@@ -1,5 +1,5 @@
 import Api from '../../Api';
-import { GetUserMembershipResponse } from './responses';
+import { GetMembershipsResponse, GetUserMembershipResponse } from './responses';
 
 export default class Memberships {
   public static async getMembership(userId: number) {
@@ -8,5 +8,12 @@ export default class Memberships {
     );
 
     return response.data as GetUserMembershipResponse;
+  }
+
+  public static async getMemberships() {
+    const response = await Api.createClient().get('/membershipType/list');
+
+    console.log('response.data:', response);
+    return response.data as GetMembershipsResponse;
   }
 }

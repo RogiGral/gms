@@ -33,9 +33,18 @@ export interface Workout {
   participantsNumber: number;
 }
 
-export interface Membership {
+export interface UserMembership {
   id: number;
-  monthlyPayment: number;
   name: string;
+  price: number;
+  numberOfMonths: 6;
+  startDate: Date;
+  endDate: Date;
+}
+
+export interface MembershipType {
+  id: number;
+  name: string;
+  numberOfMonths: number;
   price: number;
 }

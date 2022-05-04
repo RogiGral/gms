@@ -43,8 +43,8 @@ export default function WorkoutsTable({
 
   return (
     <>
-      <h2>{tableName}</h2>
-      <TableContainer component={Paper}>
+      <h3>{tableName}</h3>
+      <TableContainer component={Paper} sx={{ mb: 3 }}>
         <Table aria-label="simple table" style={{ width: '100%' }}>
           <TableHead>
             <TableRow>

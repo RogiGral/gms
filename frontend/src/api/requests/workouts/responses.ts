@@ -9,7 +9,3 @@ interface UserWorkoutResponse {
 }
 
 export type GetWorkoutsForUserResponse = UserWorkoutResponse[];
-
-// export interface GetWorkoutsForUserResponse {
-//   workouts: Workout[];
-// }

@@ -1,36 +1,44 @@
-import { Membership, Workout } from '../api/models';
+import { MembershipType, UserMembership } from '../api/models';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import {
-  GetWorkoutsForUserResponse,
-  GetWorkoutsResponse,
-} from '../api/requests/workouts/responses';
-import { GetUserMembershipResponse } from '../api/requests/memberships/responses';
+  GetMembershipsResponse,
+  GetUserMembershipResponse,
+} from '../api/requests/memberships/responses';
 
 export interface MembershipState {
-  membership: Membership | null;
+  userMembership: UserMembership | null;
+  memberships: MembershipType[];
 }
 
 const initialState: MembershipState = {
-  membership: null,
+  userMembership: null,
+  memberships: [],
 };
 
 export const membershipSlice = createSlice({
   name: 'membership',
   initialState,
   reducers: {
-    loadMembership: (
+    loadUserMembership: (
       state,
       action: PayloadAction<GetUserMembershipResponse>,
     ) => {
-      // state.membership = action.payload.map(workout => ({
-      //   ...workout,
-      //   workoutStartDate: new Date(workout.workoutStartDate),
-      //   workoutEndDate: new Date(workout.workoutEndDate),
-      // }));
+      if (!action.payload) {
+        state.userMembership = null;
+      } else {
+        state.userMembership = {
+          ...action.payload.membershipTypeId,
+          startDate: new Date(action.payload.startDate),
+          endDate: new Date(action.payload.endDate),
+        };
+      }
+    },
+    loadMemberships: (state, action: PayloadAction<GetMembershipsResponse>) => {
+      state.memberships = action.payload;
     },
   },
 });
 
-export const { loadMembership } = membershipSlice.actions;
+export const { loadUserMembership, loadMemberships } = membershipSlice.actions;
 
 export default membershipSlice.reducer;

@@ -7,8 +7,13 @@ import PeopleIcon from '@mui/icons-material/People';
 import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
 import CreditCardIcon from '@mui/icons-material/CreditCard';
 import RecentActorsIcon from '@mui/icons-material/RecentActors';
+import LogoutIcon from '@mui/icons-material/Logout';
 import { Link } from 'react-router-dom';
 import { UserRole } from '../../../api/models';
+import { toast } from 'react-toastify';
+import Session from '../../../api/Session';
+import { useAppDispatch } from '../../../reduxHooks';
+import { clearAuth } from '../../../reducers/authReducer';
 
 interface Props {
   userRole: UserRole;
@@ -54,6 +59,11 @@ const items: { [key in UserRole]: DrawerListItem[] } = {
       path: 'workout',
     },
     {
+      icon: <CreditCardIcon />,
+      text: 'Membership',
+      path: 'membership',
+    },
+    {
       icon: <DashboardIcon />,
       text: 'Profile',
       path: 'profile',
@@ -79,6 +89,8 @@ const items: { [key in UserRole]: DrawerListItem[] } = {
 };
 
 export default function DrawerList({ userRole }: Props) {
+  const dispatch = useAppDispatch();
+
   const renderItems = () => {
     return items[userRole].map(({ icon, text, path }) => {
       return (
@@ -90,5 +102,21 @@ export default function DrawerList({ userRole }: Props) {
     });
   };
 
-  return <>{renderItems()}</>;
+  const logout = () => {
+    Session.clearSession();
+    dispatch(clearAuth());
+    toast.success('Logged out');
+  };
+
+  return (
+    <>
+      {renderItems()}
+      <ListItemButton component={Link} to="/" onClick={logout}>
+        <ListItemIcon>
+          <LogoutIcon />
+        </ListItemIcon>
+        <ListItemText primary="Logout" />
+      </ListItemButton>
+    </>
+  );
 }

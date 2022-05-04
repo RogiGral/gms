@@ -20,6 +20,7 @@ import { useRouteMatch } from 'react-router';
 import { Route, Switch } from 'react-router-dom';
 import Workout from './components/Workout';
 import Membership from './components/Membership';
+import Profile from './components/Profile';
 
 const drawerWidth: number = 240;
 
@@ -44,7 +45,7 @@ export default function Dashboard() {
           <Membership />
         </Route>
         <Route exact path={`${path}/profile`}>
-          <div>profile</div>
+          <Profile />
         </Route>
         <Route exact path={`${path}/users`}>
           <div>users</div>

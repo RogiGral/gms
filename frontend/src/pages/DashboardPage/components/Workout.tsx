@@ -81,7 +81,7 @@ export default function Workout() {
     }
 
     if (workouts.length === 0) {
-      return <div>There is no workouts.</div>;
+      return <div>There is no workouts you can join.</div>;
     }
 
     return (
@@ -113,7 +113,7 @@ export default function Workout() {
     }
 
     if (userWorkoutIds.length === 0) {
-      return <div>You don't have any workouts.</div>;
+      return <div>You don't have any workouts joined.</div>;
     }
 
     return (
@@ -143,6 +143,7 @@ export default function Workout() {
         width: '100%',
       }}
     >
+      <h2>Workouts</h2>
       {renderAllWorkouts()}
       {renderUserWorkouts()}
     </div>
