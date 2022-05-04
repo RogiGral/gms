@@ -1,15 +1,8 @@
-import React, { useEffect } from 'react';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import Paper from '@mui/material/Paper';
+import React, { useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../../reduxHooks';
 import { useMutation, useQuery } from 'react-query';
 import Workouts from '../../../api/requests/workouts';
-import { Workout as WorkoutType } from '../../../api/models';
+import { UserRole, Workout as WorkoutType } from '../../../api/models';
 import {
   loadUserWorkouts,
   loadWorkouts,
@@ -17,10 +10,17 @@ import {
 import Button from '@mui/material/Button';
 import { toast } from 'react-toastify';
 import WorkoutsTable from './WorkoutsTable';
+import AssignUserToMembershipModal from './AssignUserToMembershipModal';
+import EditWorkoutModal from './EditWorkoutModal';
 
 export default function Workout() {
+  const [showEditWorkoutModal, setShowEditWorkoutModal] = useState(false);
+  const [selectedWorkout, setSelectedWorkout] = useState<WorkoutType | null>(
+    null,
+  );
   const dispatch = useAppDispatch();
   const user = useAppSelector(state => state.auth.user)!;
+  const isAdmin = user.role === UserRole.ROLE_ADMIN;
   const { workouts, userWorkoutIds } = useAppSelector(state => state.workouts);
 
   const workoutsQuery = useQuery('workouts', () => Workouts.getWorkouts(), {
@@ -60,11 +60,27 @@ export default function Workout() {
     },
     {
       onError: (error: Error) => {
-        console.log('Error when leaving workout:', error);
-        toast.error(error.message);
+        // @ts-ignore
+        toast.error(error.response.data.message);
       },
       onSuccess: () => {
         toast.success("You've left workout");
+        workoutsQuery.refetch();
+        userWorkoutIdsQuery.refetch();
+      },
+    },
+  );
+
+  const deleteWorkoutMutation = useMutation(
+    ({ workoutId }: { workoutId: number }) => {
+      return Workouts.deleteWorkout(workoutId);
+    },
+    {
+      onError: (error: Error) => {
+        toast.error(error.message);
+      },
+      onSuccess: () => {
+        toast.success('Workout deleted');
         workoutsQuery.refetch();
         userWorkoutIdsQuery.refetch();
       },
@@ -88,6 +104,7 @@ export default function Workout() {
       <WorkoutsTable
         workouts={workouts}
         tableName="Available workouts"
+        isAdmin={isAdmin}
         renderActionButton={workoutId => (
           <Button
             variant="contained"
@@ -97,6 +114,26 @@ export default function Workout() {
             }
           >
             {userWorkoutIds.includes(workoutId) ? 'Joined' : 'Join'}
+          </Button>
+        )}
+        renderEditButton={workout => (
+          <Button
+            variant="contained"
+            onClick={() => {
+              setSelectedWorkout(workout);
+              setShowEditWorkoutModal(true);
+            }}
+          >
+            Edit
+          </Button>
+        )}
+        renderDeleteButton={workoutId => (
+          <Button
+            variant="contained"
+            color="error"
+            onClick={() => deleteWorkoutMutation.mutate({ workoutId })}
+          >
+            Delete
           </Button>
         )}
       />
@@ -120,6 +157,7 @@ export default function Workout() {
       <WorkoutsTable
         workouts={workouts.filter(({ id }) => userWorkoutIds.includes(id))}
         tableName="Your workouts"
+        isAdmin={isAdmin}
         renderActionButton={workoutId => (
           <Button
             variant="contained"
@@ -129,6 +167,26 @@ export default function Workout() {
             }
           >
             Leave
+          </Button>
+        )}
+        renderEditButton={workout => (
+          <Button
+            variant="contained"
+            onClick={() => {
+              setSelectedWorkout(workout);
+              setShowEditWorkoutModal(true);
+            }}
+          >
+            Edit
+          </Button>
+        )}
+        renderDeleteButton={workoutId => (
+          <Button
+            variant="contained"
+            color="error"
+            onClick={() => deleteWorkoutMutation.mutate({ workoutId })}
+          >
+            Delete
           </Button>
         )}
       />
@@ -145,7 +203,17 @@ export default function Workout() {
     >
       <h2>Workouts</h2>
       {renderAllWorkouts()}
-      {renderUserWorkouts()}
+      {!isAdmin && renderUserWorkouts()}
+      {isAdmin && selectedWorkout && (
+        <EditWorkoutModal
+          open={showEditWorkoutModal}
+          handleClose={() => {
+            setShowEditWorkoutModal(false);
+            setSelectedWorkout(null);
+          }}
+          selectedWorkout={selectedWorkout as WorkoutType}
+        />
+      )}
     </div>
   );
 }

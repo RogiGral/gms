@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useQuery } from 'react-query';
 import { useAppDispatch, useAppSelector } from '../../../reduxHooks';
 import {
@@ -15,10 +15,15 @@ import TableCell from '@mui/material/TableCell';
 import TableBody from '@mui/material/TableBody';
 import { UserRole } from '../../../api/models';
 import Button from '@mui/material/Button';
+import AssignUserToMembershipModal from './AssignUserToMembershipModal';
 
 interface Props {}
 
 export default function Membership({}: Props) {
+  const [showAssignUserModal, setShowAssignUserModal] = useState(false);
+  const [selectedMembershipId, setSelectedMembershipId] = useState<
+    number | null
+  >(null);
   const dispatch = useAppDispatch();
   const user = useAppSelector(state => state.auth.user)!;
   const { userMembership, memberships } = useAppSelector(
@@ -130,7 +135,15 @@ export default function Membership({}: Props) {
               {(user.role === UserRole.ROLE_COACH ||
                 user.role === UserRole.ROLE_ADMIN) && (
                 <TableCell align="right">
-                  <Button variant="contained">Assign user</Button>
+                  <Button
+                    variant="contained"
+                    onClick={() => {
+                      setShowAssignUserModal(true);
+                      setSelectedMembershipId(membership.id);
+                    }}
+                  >
+                    Assign user
+                  </Button>
                 </TableCell>
               )}
             </TableRow>
@@ -153,6 +166,14 @@ export default function Membership({}: Props) {
       {renderMembership()}
       <h3>Available memberships</h3>
       {renderAvailableMemberships()}
+      <AssignUserToMembershipModal
+        open={showAssignUserModal}
+        handleClose={() => {
+          setShowAssignUserModal(false);
+          setSelectedMembershipId(null);
+        }}
+        membershipTypeId={selectedMembershipId as number}
+      />
     </div>
   );
 }

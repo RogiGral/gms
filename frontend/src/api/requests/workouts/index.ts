@@ -31,4 +31,29 @@ export default class Workouts {
 
     return response.data;
   }
+
+  public static async deleteWorkout(workoutId: number) {
+    const response = await Api.createClient().delete(
+      `/workout/delete/${workoutId}`,
+    );
+
+    return response.data as undefined;
+  }
+
+  public static async updateWorkout(
+    currentWorkoutName: string,
+    newWorkoutName: string,
+    newTrainerUsername: string,
+    newRoomNumber: string,
+    capacity: number,
+    participantsNumber: number,
+    newWorkoutStartDate: string,
+    newWorkoutEndDate: string,
+  ) {
+    const response = await Api.createClient().post(
+      `/workout/update?currentWorkoutName=${currentWorkoutName}&newWorkoutName=${newWorkoutName}&newTrainerUsername=${newTrainerUsername}&newRoomNumber=${newRoomNumber}&capacity=${capacity}&participantsNumber=${participantsNumber}&newWorkoutStartDate=${newWorkoutStartDate}&newWorkoutEndDate=${newWorkoutEndDate}`,
+    );
+
+    return response.data as undefined;
+  }
 }

@@ -16,4 +16,15 @@ export default class Memberships {
     console.log('response.data:', response);
     return response.data as GetMembershipsResponse;
   }
+
+  public static async assignMembership(
+    userId: number,
+    membershipTypeId: number,
+  ) {
+    const response = await Api.createClient().post(
+      `/userMembership/add?userId=${userId}&membershipTypeId=${membershipTypeId}`,
+    );
+
+    return response.data as undefined;
+  }
 }

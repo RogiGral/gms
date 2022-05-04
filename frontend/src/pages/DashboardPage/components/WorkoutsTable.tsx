@@ -12,13 +12,19 @@ import TableContainer from '@mui/material/TableContainer';
 interface Props {
   workouts: Workout[];
   renderActionButton: (workoutId: number) => React.ReactNode;
+  renderEditButton: (workout: WorkoutType) => React.ReactNode;
+  renderDeleteButton: (workoutId: number) => React.ReactNode;
   tableName: string;
+  isAdmin: boolean;
 }
 
 export default function WorkoutsTable({
   workouts,
   renderActionButton,
+  renderDeleteButton,
+  renderEditButton,
   tableName,
+  isAdmin,
 }: Props) {
   const renderWorkoutsTableRows = (workoutsArr: WorkoutType[]) =>
     workoutsArr.map(workout => (
@@ -37,7 +43,17 @@ export default function WorkoutsTable({
           {workout.workoutEndDate.toLocaleDateString()}
         </TableCell>
         <TableCell align="right">{workout.participantsNumber}</TableCell>
-        <TableCell align="right">{renderActionButton(workout.id)}</TableCell>
+        {!isAdmin && (
+          <TableCell align="right">{renderActionButton(workout.id)}</TableCell>
+        )}
+        {isAdmin && (
+          <>
+            <TableCell align="right">{renderEditButton(workout)}</TableCell>
+            <TableCell align="right">
+              {renderDeleteButton(workout.id)}
+            </TableCell>
+          </>
+        )}
       </TableRow>
     ));
 
@@ -54,6 +70,7 @@ export default function WorkoutsTable({
               <TableCell align="right">End date</TableCell>
               <TableCell align="right">Participants number</TableCell>
               <TableCell align="right" />
+              {isAdmin && <TableCell align="right" />}
             </TableRow>
           </TableHead>
           <TableBody>{renderWorkoutsTableRows(workouts)}</TableBody>
