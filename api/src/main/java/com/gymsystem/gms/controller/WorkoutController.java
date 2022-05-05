@@ -42,7 +42,7 @@ public class WorkoutController extends ExceptionHandling {
     }
     @PostMapping("/update")
     //@PreAuthorize("hasAuthority('workout:crud')") //comment for testing
-    public ResponseEntity<Workout> addNewWorkout(@RequestParam("workoutId") Long workoutId,
+    public ResponseEntity<Workout> updateWorkout(@RequestParam("workoutId") Long workoutId,
                                                  @RequestParam("newWorkoutName") String newWorkoutName,
                                                  @RequestParam("newTrainerUsername") String newTrainerUsername,
                                                  @RequestParam("newRoomNumber") String newRoomNumber,

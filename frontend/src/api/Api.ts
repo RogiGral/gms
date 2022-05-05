@@ -1,11 +1,17 @@
 import axios, { AxiosInstance } from 'axios';
 import Session from './Session';
 import Auth from './requests/auth';
+import Workouts from './requests/workouts';
+import Memberships from './requests/memberships';
+import Users from './requests/users';
 
 export const BASE_API_URL = 'http://localhost:8081';
 
 export default class Api {
   public static Auth = Auth;
+  public static Workouts = Workouts;
+  public static Memberships = Memberships;
+  public static Users = Users;
 
   public static createClient(): AxiosInstance {
     const headers = Api.getHeaders();
