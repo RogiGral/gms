@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useQuery } from 'react-query';
+import { useMutation, useQuery } from 'react-query';
 import { useAppDispatch, useAppSelector } from '../../../reduxHooks';
 import {
   loadMemberships,
@@ -13,19 +13,28 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import TableCell from '@mui/material/TableCell';
 import TableBody from '@mui/material/TableBody';
-import { UserRole } from '../../../api/models';
+import { MembershipType, UserRole } from '../../../api/models';
 import Button from '@mui/material/Button';
 import AssignUserToMembershipModal from './AssignUserToMembershipModal';
+import CreateMembershipModal from './ CreateMembershipModal';
+import EditMembershipModal from './EditMembershipModal';
+import { toast } from 'react-toastify';
 
 interface Props {}
 
 export default function Membership({}: Props) {
+  const [showCreateMembershipModal, setShowCreateMembershipModal] =
+    useState(false);
+  const [showEditMembershipModal, setShowEditMembershipModal] = useState(false);
+  const [selectedMembership, setSelectedMembership] =
+    useState<MembershipType | null>(null);
   const [showAssignUserModal, setShowAssignUserModal] = useState(false);
   const [selectedMembershipId, setSelectedMembershipId] = useState<
     number | null
   >(null);
   const dispatch = useAppDispatch();
   const user = useAppSelector(state => state.auth.user)!;
+  const isAdmin = user.role === UserRole.ROLE_ADMIN;
   const { userMembership, memberships } = useAppSelector(
     state => state.membership,
   );
@@ -46,6 +55,22 @@ export default function Membership({}: Props) {
     {
       onSuccess: data => {
         dispatch(loadMemberships(data));
+      },
+    },
+  );
+
+  const deleteMembershipMutation = useMutation(
+    ({ id }: { id: number }) => {
+      return Api.Memberships.deleteMembership(id);
+    },
+    {
+      onError: (error: Error) => {
+        // @ts-ignore
+        toast.error(error.response.data.message);
+      },
+      onSuccess: () => {
+        toast.success('Membership has been deleted');
+        membershipsQuery.refetch();
       },
     },
   );
@@ -113,8 +138,8 @@ export default function Membership({}: Props) {
       return <div>Currently, there are no available memberships.</div>;
     }
 
-    return memberships.map(membership => (
-      <TableContainer component={Paper} key={membership.id}>
+    return (
+      <TableContainer component={Paper}>
         <Table aria-label="available memberships">
           <TableHead>
             <TableRow>
@@ -125,32 +150,67 @@ export default function Membership({}: Props) {
                 user.role === UserRole.ROLE_ADMIN) && (
                 <TableCell align="right" />
               )}
+              {user.role === UserRole.ROLE_ADMIN && (
+                <>
+                  <TableCell align="right" />
+                  <TableCell align="right" />
+                </>
+              )}
             </TableRow>
           </TableHead>
           <TableBody>
-            <TableRow>
-              <TableCell align="left">{membership.name}</TableCell>
-              <TableCell align="left">{membership.price}</TableCell>
-              <TableCell align="left">{membership.numberOfMonths}</TableCell>
-              {(user.role === UserRole.ROLE_COACH ||
-                user.role === UserRole.ROLE_ADMIN) && (
-                <TableCell align="right">
-                  <Button
-                    variant="contained"
-                    onClick={() => {
-                      setShowAssignUserModal(true);
-                      setSelectedMembershipId(membership.id);
-                    }}
-                  >
-                    Assign user
-                  </Button>
-                </TableCell>
-              )}
-            </TableRow>
+            {memberships.map(membership => (
+              <TableRow key={membership.id}>
+                <TableCell align="left">{membership.name}</TableCell>
+                <TableCell align="left">{membership.price} PLN</TableCell>
+                <TableCell align="left">{membership.numberOfMonths}</TableCell>
+                {(user.role === UserRole.ROLE_COACH ||
+                  user.role === UserRole.ROLE_ADMIN) && (
+                  <TableCell align="right">
+                    <Button
+                      variant="contained"
+                      onClick={() => {
+                        setShowAssignUserModal(true);
+                        setSelectedMembershipId(membership.id);
+                      }}
+                    >
+                      Assign user
+                    </Button>
+                  </TableCell>
+                )}
+                {user.role === UserRole.ROLE_ADMIN && (
+                  <>
+                    <TableCell align="right">
+                      <Button
+                        variant="contained"
+                        onClick={() => {
+                          setSelectedMembership(membership);
+                          setShowEditMembershipModal(true);
+                          setSelectedMembershipId(membership.id);
+                        }}
+                      >
+                        Edit
+                      </Button>
+                    </TableCell>
+                    <TableCell align="right">
+                      <Button
+                        variant="contained"
+                        color="error"
+                        onClick={() =>
+                          deleteMembershipMutation.mutate({ id: membership.id })
+                        }
+                      >
+                        Delete
+                      </Button>
+                    </TableCell>
+                  </>
+                )}
+              </TableRow>
+            ))}
           </TableBody>
         </Table>
       </TableContainer>
-    ));
+    );
   };
 
   return (
@@ -158,14 +218,31 @@ export default function Membership({}: Props) {
       style={{
         display: 'flex',
         flexDirection: 'column',
+        alignItems: 'flex-start',
         width: '100%',
       }}
     >
       <h2>Membership</h2>
-      <h3>Your membership</h3>
-      {renderMembership()}
+      {!isAdmin && (
+        <>
+          <h3>Your membership</h3>
+          {renderMembership()}
+        </>
+      )}
+
       <h3>Available memberships</h3>
       {renderAvailableMemberships()}
+
+      {isAdmin && (
+        <Button
+          variant="contained"
+          onClick={() => setShowCreateMembershipModal(true)}
+          style={{ marginTop: 20 }}
+        >
+          Create new membership
+        </Button>
+      )}
+
       <AssignUserToMembershipModal
         open={showAssignUserModal}
         handleClose={() => {
@@ -174,6 +251,24 @@ export default function Membership({}: Props) {
         }}
         membershipTypeId={selectedMembershipId as number}
       />
+      <CreateMembershipModal
+        open={showCreateMembershipModal}
+        handleClose={() => {
+          setShowCreateMembershipModal(false);
+          membershipsQuery.refetch();
+        }}
+      />
+      {isAdmin && selectedMembership && (
+        <EditMembershipModal
+          open={showEditMembershipModal}
+          handleClose={() => {
+            setShowEditMembershipModal(false);
+            setSelectedMembership(null);
+            membershipsQuery.refetch();
+          }}
+          selectedMembership={selectedMembership as MembershipType}
+        />
+      )}
     </div>
   );
 }

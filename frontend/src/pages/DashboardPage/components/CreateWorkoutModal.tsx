@@ -2,7 +2,6 @@ import React from 'react';
 import { Modal } from '@mui/material';
 import Box from '@mui/material/Box';
 import { Form, Formik } from 'formik';
-import { Workout } from '../../../api/models';
 import Button from '@mui/material/Button';
 import { useMutation } from 'react-query';
 import Api from '../../../api/Api';
@@ -13,14 +12,15 @@ import * as Yup from 'yup';
 interface Props {
   open: boolean;
   handleClose: () => void;
-  selectedWorkout: Workout;
 }
 
-interface UpdateWorkoutForm {
-  newWorkoutName: string;
-  newTrainerUsername: string;
-  newRoomNumber: string;
+interface CreateWorkoutForm {
+  workoutName: string;
+  trainerUsername: string;
+  roomNumber: string;
   capacity: number;
+  workoutStartDate: string;
+  workoutEndDate: string;
 }
 
 const style = {
@@ -39,29 +39,27 @@ const WorkoutSchema = Yup.object().shape({
   newTrainerUsername: Yup.string().required('Please enter trainer username'),
   newRoomNumber: Yup.string().required('Please enter room number'),
   capacity: Yup.string().required('Please enter capacity'),
+  workoutStartDate: Yup.string().required('Please enter start date'),
+  workoutEndDate: Yup.string().required('Please enter end date'),
 });
 
-export default function EditWorkoutModal({
-  open,
-  handleClose,
-  selectedWorkout,
-}: Props) {
-  const updateWorkoutMutation = useMutation(
+export default function CreateWorkoutModal({ open, handleClose }: Props) {
+  const createWorkoutMutation = useMutation(
     ({
-      newWorkoutName,
-      newTrainerUsername,
-      newRoomNumber,
+      workoutName,
+      trainerUsername,
+      roomNumber,
       capacity,
-    }: UpdateWorkoutForm) => {
-      return Api.Workouts.updateWorkout(
-        selectedWorkout.workoutName,
-        newWorkoutName,
-        newTrainerUsername,
-        newRoomNumber,
+      workoutStartDate,
+      workoutEndDate,
+    }: CreateWorkoutForm) => {
+      return Api.Workouts.createWorkout(
+        workoutName,
+        trainerUsername,
+        roomNumber,
         capacity,
-        selectedWorkout.participantsNumber,
-        selectedWorkout.workoutStartDate.toISOString(),
-        selectedWorkout.workoutEndDate.toISOString(),
+        workoutStartDate,
+        workoutEndDate,
       );
     },
     {
@@ -70,35 +68,41 @@ export default function EditWorkoutModal({
         toast.error(error.response.data.message);
       },
       onSuccess: () => {
-        toast.success('User has been updated');
+        toast.success('Workout has been created');
       },
     },
   );
 
   const handleSubmit = ({
-    newWorkoutName,
-    newTrainerUsername,
-    newRoomNumber,
+    workoutName,
+    trainerUsername,
+    roomNumber,
     capacity,
-  }: UpdateWorkoutForm) => {
-    updateWorkoutMutation.mutate({
-      newWorkoutName,
-      newTrainerUsername,
-      newRoomNumber,
+    workoutStartDate,
+    workoutEndDate,
+  }: CreateWorkoutForm) => {
+    createWorkoutMutation.mutate({
+      workoutName,
+      trainerUsername,
+      roomNumber,
       capacity,
+      workoutStartDate,
+      workoutEndDate,
     });
   };
 
   return (
     <Modal open={open} onClose={handleClose}>
       <Box sx={style}>
-        <h2 style={{ marginTop: 0 }}>Edit workout</h2>
+        <h2 style={{ marginTop: 0 }}>Create workout</h2>
         <Formik
           initialValues={{
-            newWorkoutName: selectedWorkout.workoutName,
-            newTrainerUsername: selectedWorkout.trainerUsername,
-            newRoomNumber: selectedWorkout.roomNumber,
-            capacity: selectedWorkout.capacity,
+            workoutName: '',
+            trainerUsername: '',
+            roomNumber: '',
+            capacity: 0,
+            workoutStartDate: '',
+            workoutEndDate: '',
           }}
           onSubmit={handleSubmit}
           validationSchema={WorkoutSchema}
@@ -108,43 +112,40 @@ export default function EditWorkoutModal({
               <TextField
                 margin="normal"
                 fullWidth
-                id="newWorkoutName"
+                id="workoutName"
                 label="Workout name"
-                name="newWorkoutName"
+                name="workoutName"
                 autoFocus
-                value={values.newWorkoutName}
+                value={values.workoutName}
                 onChange={handleChange}
-                error={touched.newWorkoutName && Boolean(errors.newWorkoutName)}
-                helperText={touched.newWorkoutName && errors.newWorkoutName}
+                error={touched.workoutName && Boolean(errors.workoutName)}
+                helperText={touched.workoutName && errors.workoutName}
               />
               <TextField
                 margin="normal"
                 fullWidth
-                id="newTrainerUsername"
+                id="trainerUsername"
                 label="Trainer username"
-                name="newTrainerUsername"
+                name="trainerUsername"
                 autoFocus
-                value={values.newTrainerUsername}
+                value={values.trainerUsername}
                 onChange={handleChange}
                 error={
-                  touched.newTrainerUsername &&
-                  Boolean(errors.newTrainerUsername)
+                  touched.trainerUsername && Boolean(errors.trainerUsername)
                 }
-                helperText={
-                  touched.newTrainerUsername && errors.newTrainerUsername
-                }
+                helperText={touched.trainerUsername && errors.trainerUsername}
               />
               <TextField
                 margin="normal"
                 fullWidth
-                id="newRoomNumber"
+                id="roomNumber"
                 label="Room number"
-                name="newRoomNumber"
+                name="roomNumber"
                 autoFocus
-                value={values.newRoomNumber}
+                value={values.roomNumber}
                 onChange={handleChange}
-                error={touched.newRoomNumber && Boolean(errors.newRoomNumber)}
-                helperText={touched.newRoomNumber && errors.newRoomNumber}
+                error={touched.roomNumber && Boolean(errors.roomNumber)}
+                helperText={touched.roomNumber && errors.roomNumber}
               />
               <TextField
                 margin="normal"
@@ -157,6 +158,34 @@ export default function EditWorkoutModal({
                 onChange={handleChange}
                 error={touched.capacity && Boolean(errors.capacity)}
                 helperText={touched.capacity && errors.capacity}
+              />
+              <TextField
+                margin="normal"
+                fullWidth
+                id="workoutStartDate"
+                label="Workout start date"
+                name="workoutStartDate"
+                autoFocus
+                value={values.workoutStartDate}
+                onChange={handleChange}
+                error={
+                  touched.workoutStartDate && Boolean(errors.workoutStartDate)
+                }
+                helperText={touched.workoutStartDate && errors.workoutStartDate}
+                type="date"
+              />
+              <TextField
+                margin="normal"
+                fullWidth
+                id="workoutEndDate"
+                label="Workout end date"
+                name="workoutEndDate"
+                autoFocus
+                value={values.workoutEndDate}
+                onChange={handleChange}
+                error={touched.workoutEndDate && Boolean(errors.workoutEndDate)}
+                helperText={touched.workoutEndDate && errors.workoutEndDate}
+                type="date"
               />
               <div
                 style={{
@@ -171,7 +200,7 @@ export default function EditWorkoutModal({
                   Close
                 </Button>
                 <Button variant="contained" type="submit">
-                  Update
+                  Create
                 </Button>
               </div>
             </Form>

@@ -56,4 +56,18 @@ export default class Workouts {
 
     return response.data as undefined;
   }
+
+  public static async createWorkout(
+    workoutName: string,
+    trainerUsername: string,
+    roomNumber: string,
+    capacity: number,
+    workoutStartDate: string,
+    workoutEndDate: string,
+  ) {
+    const response = await Api.createClient().post(
+      `workout/add?workoutName=${workoutName}&trainerUsername=${trainerUsername}&roomNumber=${roomNumber}&capacity=${capacity}&workoutStartDate=${workoutStartDate}&workoutEndDate=${workoutEndDate}`,
+    );
+    return response.data as undefined;
+  }
 }

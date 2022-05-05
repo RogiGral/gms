@@ -27,4 +27,37 @@ export default class Memberships {
 
     return response.data as undefined;
   }
+
+  public static async createMembership(
+    name: string,
+    price: number,
+    numberOfMonths: number,
+  ) {
+    const response = await Api.createClient().post(
+      `/membershipType/add?name=${name}&price=${price}&numberOfMonths=${numberOfMonths}`,
+    );
+
+    return response.data as undefined;
+  }
+
+  public static async editMembership(
+    oldName: string,
+    newName: string,
+    newPrice: number,
+    numberOfMonths: number,
+  ) {
+    const response = await Api.createClient().post(
+      `/membershipType/update?oldName=${oldName}&newName=${newName}&newPrice=${newPrice}&numberOfMonths=${numberOfMonths}`,
+    );
+
+    return response.data as undefined;
+  }
+
+  public static async deleteMembership(id: number) {
+    const response = await Api.createClient().delete(
+      `/membershipType/delete/${id}`,
+    );
+
+    return response.data as undefined;
+  }
 }

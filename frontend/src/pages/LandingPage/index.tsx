@@ -8,6 +8,7 @@ import Button from '@mui/material/Button';
 import CloseIcon from '@mui/icons-material/Close';
 import pudzian from '../../assets/pudzian.png';
 import { useHistory } from 'react-router';
+import { useAppSelector } from '../../reduxHooks';
 
 const menuItems = [
   { text: 'Główna', path: '/#' },
@@ -20,12 +21,25 @@ const menuItems = [
   { text: 'Rejestracja', path: '/register' },
 ];
 
+const authorizedMenuItems = [
+  { text: 'Główna', path: '/#' },
+  { text: 'O nas', path: '/#' },
+  { text: 'Kursy', path: '/#' },
+  { text: 'Plan zajęć', path: '/#' },
+  { text: 'Cennik', path: '/#' },
+  { text: 'Kontakt', path: '/#' },
+  { text: 'Panel użytkownika', path: '/dashboard' },
+];
+
 export default function LandingPage() {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const user = useAppSelector(state => state.auth.user);
   const history = useHistory();
 
   const renderMenuItems = () => {
-    return menuItems.map(item => {
+    const items = user ? authorizedMenuItems : menuItems;
+
+    return items.map(item => {
       return (
         <Button
           key={item.text}

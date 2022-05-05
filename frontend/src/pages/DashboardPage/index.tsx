@@ -22,6 +22,7 @@ import Workout from './components/Workout';
 import Membership from './components/Membership';
 import Profile from './components/Profile';
 import Users from './components/Users';
+import { UserRole } from '../../api/models';
 
 const drawerWidth: number = 240;
 
@@ -34,6 +35,47 @@ export default function Dashboard() {
 
   const toggleDrawer = () => {
     setOpen(!open);
+  };
+
+  const getRoleName = () => {
+    switch (user.role) {
+      case UserRole.ROLE_USER:
+        return 'regular user';
+      case UserRole.ROLE_COACH:
+        return 'coach';
+      case UserRole.ROLE_ADMIN:
+        return 'admin';
+    }
+  };
+
+  const getThingsYouCanDo = () => {
+    switch (user.role) {
+      case UserRole.ROLE_USER:
+        return (
+          <ul>
+            <li>Manage your profile</li>
+            <li>Check your membership</li>
+            <li>Check your workouts and see all available</li>
+          </ul>
+        );
+      case UserRole.ROLE_COACH:
+        return (
+          <ul>
+            <li>Manage your profile</li>
+            <li>Check your membership</li>
+            <li>Check your workouts and see all available</li>
+            <li>Assign users to workouts</li>
+          </ul>
+        );
+      case UserRole.ROLE_ADMIN:
+        return (
+          <ul>
+            <li>Manage memberships</li>
+            <li>Manage users</li>
+            <li>Manage workouts</li>
+          </ul>
+        );
+    }
   };
 
   const renderContent = () => {
@@ -50,6 +92,23 @@ export default function Dashboard() {
         </Route>
         <Route exact path={`${path}/users`}>
           <Users />
+        </Route>
+        <Route exact path={`${path}/`}>
+          <div style={{ display: 'flex', flexDirection: 'column' }}>
+            <h2>
+              Hello, {user.firstName} {user.lastName}
+            </h2>
+            <h3>
+              Welcome to our gym management system. Your permissions are:{' '}
+              {getRoleName()}
+            </h3>
+            <p style={{ margin: 0 }}>As an {getRoleName()} you can:</p>
+            {getThingsYouCanDo()}
+            <p style={{ margin: 0 }}>
+              Select appropriate tab from sidebar to perform actions in our
+              system.
+            </p>
+          </div>
         </Route>
       </Switch>
     );

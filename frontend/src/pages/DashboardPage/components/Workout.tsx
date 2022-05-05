@@ -12,9 +12,11 @@ import { toast } from 'react-toastify';
 import WorkoutsTable from './WorkoutsTable';
 import AssignUserToMembershipModal from './AssignUserToMembershipModal';
 import EditWorkoutModal from './EditWorkoutModal';
+import CreateWorkoutModal from './CreateWorkoutModal';
 
 export default function Workout() {
   const [showEditWorkoutModal, setShowEditWorkoutModal] = useState(false);
+  const [showCreateWorkoutModal, setShowCreateWorkoutModal] = useState(false);
   const [selectedWorkout, setSelectedWorkout] = useState<WorkoutType | null>(
     null,
   );
@@ -199,19 +201,38 @@ export default function Workout() {
         display: 'flex',
         flexDirection: 'column',
         width: '100%',
+        alignItems: 'flex-start',
       }}
     >
       <h2>Workouts</h2>
       {renderAllWorkouts()}
       {!isAdmin && renderUserWorkouts()}
+      {isAdmin && (
+        <Button
+          variant="contained"
+          onClick={() => setShowCreateWorkoutModal(true)}
+        >
+          Create new workout
+        </Button>
+      )}
       {isAdmin && selectedWorkout && (
         <EditWorkoutModal
           open={showEditWorkoutModal}
           handleClose={() => {
             setShowEditWorkoutModal(false);
             setSelectedWorkout(null);
+            workoutsQuery.refetch();
           }}
           selectedWorkout={selectedWorkout as WorkoutType}
+        />
+      )}
+      {isAdmin && (
+        <CreateWorkoutModal
+          open={showCreateWorkoutModal}
+          handleClose={() => {
+            setShowCreateWorkoutModal(false);
+            workoutsQuery.refetch();
+          }}
         />
       )}
     </div>

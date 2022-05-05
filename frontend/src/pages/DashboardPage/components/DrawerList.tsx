@@ -7,6 +7,7 @@ import PeopleIcon from '@mui/icons-material/People';
 import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
 import CreditCardIcon from '@mui/icons-material/CreditCard';
 import RecentActorsIcon from '@mui/icons-material/RecentActors';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import LogoutIcon from '@mui/icons-material/Logout';
 import { Link } from 'react-router-dom';
 import { UserRole } from '../../../api/models';
@@ -94,7 +95,7 @@ export default function DrawerList({ userRole }: Props) {
   const renderItems = () => {
     return items[userRole].map(({ icon, text, path }) => {
       return (
-        <ListItemButton component={Link} to={`/dashboard/${path}`}>
+        <ListItemButton component={Link} to={`/dashboard/${path}`} key={path}>
           <ListItemIcon>{icon}</ListItemIcon>
           <ListItemText primary={text} />
         </ListItemButton>
@@ -111,6 +112,12 @@ export default function DrawerList({ userRole }: Props) {
   return (
     <>
       {renderItems()}
+      <ListItemButton component={Link} to="/">
+        <ListItemIcon>
+          <ArrowBackIcon />
+        </ListItemIcon>
+        <ListItemText primary="Landing page" />
+      </ListItemButton>
       <ListItemButton component={Link} to="/" onClick={logout}>
         <ListItemIcon>
           <LogoutIcon />
