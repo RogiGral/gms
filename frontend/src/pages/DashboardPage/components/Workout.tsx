@@ -57,8 +57,8 @@ export default function Workout() {
   );
 
   const leaveWorkoutMutation = useMutation(
-    ({ userId, workoutId }: { userId: number; workoutId: number }) => {
-      return Workouts.leaveWorkout(userId, workoutId);
+    ({ userId }: { userId: number }) => {
+      return Workouts.leaveWorkout(userId);
     },
     {
       onError: (error: Error) => {
@@ -164,9 +164,7 @@ export default function Workout() {
           <Button
             variant="contained"
             color="error"
-            onClick={() =>
-              leaveWorkoutMutation.mutate({ workoutId, userId: user.id })
-            }
+            onClick={() => leaveWorkoutMutation.mutate({ userId: user.id })}
           >
             Leave
           </Button>

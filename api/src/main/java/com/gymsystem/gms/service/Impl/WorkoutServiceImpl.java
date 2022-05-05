@@ -104,7 +104,7 @@ public class WorkoutServiceImpl implements WorkoutService {
 
     private void validateStartEndDate(Date workoutStartDate, Date workoutEndDate) throws WorkoutDateException {
         if(workoutEndDate==null || workoutStartDate==null)return;
-        if(workoutEndDate.after(workoutStartDate)){
+        if(workoutEndDate.before(workoutStartDate)){
             throw new WorkoutDateException(WORKOUT_DATE_INVALID);
         }
     }

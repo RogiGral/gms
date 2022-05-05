@@ -35,9 +35,9 @@ const style = {
 };
 
 const WorkoutSchema = Yup.object().shape({
-  newWorkoutName: Yup.string().required('Please enter workout name'),
-  newTrainerUsername: Yup.string().required('Please enter trainer username'),
-  newRoomNumber: Yup.string().required('Please enter room number'),
+  workoutName: Yup.string().required('Please enter workout name'),
+  trainerUsername: Yup.string().required('Please enter trainer username'),
+  roomNumber: Yup.string().required('Please enter room number'),
   capacity: Yup.string().required('Please enter capacity'),
   workoutStartDate: Yup.string().required('Please enter start date'),
   workoutEndDate: Yup.string().required('Please enter end date'),
@@ -81,6 +81,7 @@ export default function CreateWorkoutModal({ open, handleClose }: Props) {
     workoutStartDate,
     workoutEndDate,
   }: CreateWorkoutForm) => {
+    console.log('submitting');
     createWorkoutMutation.mutate({
       workoutName,
       trainerUsername,

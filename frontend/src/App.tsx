@@ -65,7 +65,7 @@ function App() {
   };
 
   const renderAuthorizedRoutes = () => {
-    console.log('rendering authorized routes');
+    console.log('rendering authorized routessss');
     return (
       <>
         <Route exact path="/" component={LandingPage} />
