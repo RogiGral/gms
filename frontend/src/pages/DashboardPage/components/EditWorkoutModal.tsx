@@ -21,6 +21,8 @@ interface UpdateWorkoutForm {
   newTrainerUsername: string;
   newRoomNumber: string;
   capacity: number;
+  newWorkoutStartDate: string;
+  newWorkoutEndDate: string;
 }
 
 const style = {
@@ -39,7 +41,21 @@ const WorkoutSchema = Yup.object().shape({
   newTrainerUsername: Yup.string().required('Please enter trainer username'),
   newRoomNumber: Yup.string().required('Please enter room number'),
   capacity: Yup.string().required('Please enter capacity'),
+  newWorkoutStartDate: Yup.string().required('Please enter start date'),
+  newWorkoutEndDate: Yup.string().required('Please enter end date'),
 });
+
+function formatDate(date: any): string {
+  var d = new Date(date),
+    month = '' + (d.getMonth() + 1),
+    day = '' + d.getDate(),
+    year = d.getFullYear();
+
+  if (month.length < 2) month = '0' + month;
+  if (day.length < 2) day = '0' + day;
+
+  return [year, month, day].join('-');
+}
 
 export default function EditWorkoutModal({
   open,
@@ -52,16 +68,18 @@ export default function EditWorkoutModal({
       newTrainerUsername,
       newRoomNumber,
       capacity,
+      newWorkoutStartDate,
+      newWorkoutEndDate,
     }: UpdateWorkoutForm) => {
       return Api.Workouts.updateWorkout(
-        selectedWorkout.workoutName,
+        selectedWorkout.id,
         newWorkoutName,
         newTrainerUsername,
         newRoomNumber,
         capacity,
         selectedWorkout.participantsNumber,
-        selectedWorkout.workoutStartDate.toISOString(),
-        selectedWorkout.workoutEndDate.toISOString(),
+        newWorkoutStartDate,
+        newWorkoutEndDate,
       );
     },
     {
@@ -70,7 +88,7 @@ export default function EditWorkoutModal({
         toast.error(error.response.data.message);
       },
       onSuccess: () => {
-        toast.success('User has been updated');
+        toast.success('Workout has been updated');
       },
     },
   );
@@ -80,12 +98,16 @@ export default function EditWorkoutModal({
     newTrainerUsername,
     newRoomNumber,
     capacity,
+    newWorkoutStartDate,
+    newWorkoutEndDate,
   }: UpdateWorkoutForm) => {
     updateWorkoutMutation.mutate({
       newWorkoutName,
       newTrainerUsername,
       newRoomNumber,
       capacity,
+      newWorkoutStartDate,
+      newWorkoutEndDate,
     });
   };
 
@@ -99,6 +121,8 @@ export default function EditWorkoutModal({
             newTrainerUsername: selectedWorkout.trainerUsername,
             newRoomNumber: selectedWorkout.roomNumber,
             capacity: selectedWorkout.capacity,
+            newWorkoutStartDate: formatDate(selectedWorkout.workoutStartDate),
+            newWorkoutEndDate: formatDate(selectedWorkout.workoutEndDate),
           }}
           onSubmit={handleSubmit}
           validationSchema={WorkoutSchema}
@@ -157,6 +181,41 @@ export default function EditWorkoutModal({
                 onChange={handleChange}
                 error={touched.capacity && Boolean(errors.capacity)}
                 helperText={touched.capacity && errors.capacity}
+              />
+              <TextField
+                margin="normal"
+                fullWidth
+                id="newWorkoutStartDate"
+                label="Workout start date"
+                name="newWorkoutStartDate"
+                autoFocus
+                value={values.newWorkoutStartDate}
+                onChange={handleChange}
+                error={
+                  touched.newWorkoutStartDate &&
+                  Boolean(errors.newWorkoutStartDate)
+                }
+                helperText={
+                  touched.newWorkoutStartDate && errors.newWorkoutStartDate
+                }
+                type="date"
+              />
+              <TextField
+                margin="normal"
+                fullWidth
+                id="newWorkoutEndDate"
+                label="Workout end date"
+                name="newWorkoutEndDate"
+                autoFocus
+                value={values.newWorkoutEndDate}
+                onChange={handleChange}
+                error={
+                  touched.newWorkoutEndDate && Boolean(errors.newWorkoutEndDate)
+                }
+                helperText={
+                  touched.newWorkoutEndDate && errors.newWorkoutEndDate
+                }
+                type="date"
               />
               <div
                 style={{

@@ -2,7 +2,6 @@ import React from 'react';
 import { Workout as WorkoutType, Workout } from '../../../api/models';
 import TableRow from '@mui/material/TableRow';
 import TableCell from '@mui/material/TableCell';
-import Button, { ButtonProps } from '@mui/material/Button';
 import Paper from '@mui/material/Paper';
 import Table from '@mui/material/Table';
 import TableHead from '@mui/material/TableHead';
@@ -37,7 +36,7 @@ export default function WorkoutsTable({
         </TableCell>
         <TableCell align="right">{workout.roomNumber}</TableCell>
         <TableCell align="right">
-          {workout.workoutStartDate.toLocaleTimeString()}
+          {workout.workoutStartDate.toLocaleDateString()}
         </TableCell>
         <TableCell align="right">
           {workout.workoutEndDate.toLocaleDateString()}

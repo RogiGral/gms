@@ -24,9 +24,9 @@ export default class Workouts {
     return response.data;
   }
 
-  public static async leaveWorkout(userId: number, workoutId: number) {
+  public static async leaveWorkout(workoutId: number) {
     const response = await Api.createClient().delete(
-      `/user-workout/delete/${workoutId}?userId=${userId}`,
+      `/user-workout/delete/${workoutId}`,
     );
 
     return response.data;
@@ -41,7 +41,7 @@ export default class Workouts {
   }
 
   public static async updateWorkout(
-    currentWorkoutName: string,
+    workoutId: number,
     newWorkoutName: string,
     newTrainerUsername: string,
     newRoomNumber: string,
@@ -51,7 +51,7 @@ export default class Workouts {
     newWorkoutEndDate: string,
   ) {
     const response = await Api.createClient().post(
-      `/workout/update?currentWorkoutName=${currentWorkoutName}&newWorkoutName=${newWorkoutName}&newTrainerUsername=${newTrainerUsername}&newRoomNumber=${newRoomNumber}&capacity=${capacity}&participantsNumber=${participantsNumber}&newWorkoutStartDate=${newWorkoutStartDate}&newWorkoutEndDate=${newWorkoutEndDate}`,
+      `/workout/update?workoutId=${workoutId}&newWorkoutName=${newWorkoutName}&newTrainerUsername=${newTrainerUsername}&newRoomNumber=${newRoomNumber}&capacity=${capacity}&participantsNumber=${participantsNumber}&newWorkoutStartDate=${newWorkoutStartDate}&newWorkoutEndDate=${newWorkoutEndDate}`,
     );
 
     return response.data as undefined;
