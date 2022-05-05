@@ -10,11 +10,15 @@ import {
 import Button from '@mui/material/Button';
 import { toast } from 'react-toastify';
 import WorkoutsTable from './WorkoutsTable';
-import AssignUserToMembershipModal from './AssignUserToMembershipModal';
 import EditWorkoutModal from './EditWorkoutModal';
 import CreateWorkoutModal from './CreateWorkoutModal';
+import AssignUserToWorkoutModal from './AssignUserToWorkoutModal';
 
 export default function Workout() {
+  const [showAssignUserModal, setShowAssignUserModal] = useState(false);
+  const [selectedWorkoutId, setSelectedWorkoutId] = useState<number | null>(
+    null,
+  );
   const [showEditWorkoutModal, setShowEditWorkoutModal] = useState(false);
   const [showCreateWorkoutModal, setShowCreateWorkoutModal] = useState(false);
   const [selectedWorkout, setSelectedWorkout] = useState<WorkoutType | null>(
@@ -34,7 +38,17 @@ export default function Workout() {
     () => Workouts.getWorkoutsForUser(user.id),
     {
       onSuccess: data => {
-        dispatch(loadUserWorkouts(data.map(resp => resp.workoutId.id)));
+        dispatch(
+          loadUserWorkouts(
+            data.map(resp => {
+              return {
+                id: resp.id,
+                workoutId: resp.workoutId.id,
+                userId: resp.userId.id,
+              };
+            }),
+          ),
+        );
       },
     },
   );
@@ -57,8 +71,8 @@ export default function Workout() {
   );
 
   const leaveWorkoutMutation = useMutation(
-    ({ workoutId }: { workoutId: number }) => {
-      return Workouts.leaveWorkout(workoutId);
+    ({ userWorkoutId }: { userWorkoutId: number }) => {
+      return Workouts.leaveWorkout(userWorkoutId);
     },
     {
       onError: (error: Error) => {
@@ -107,15 +121,22 @@ export default function Workout() {
         workouts={workouts}
         tableName="Available workouts"
         isAdmin={isAdmin}
+        isCoach={user.role === UserRole.ROLE_COACH}
         renderActionButton={workoutId => (
           <Button
             variant="contained"
-            disabled={userWorkoutIds.includes(workoutId)}
+            disabled={userWorkoutIds
+              .map(userWorkout => userWorkout.workoutId)
+              .includes(workoutId)}
             onClick={() =>
               joinWorkoutMutation.mutate({ workoutId, userId: user.id })
             }
           >
-            {userWorkoutIds.includes(workoutId) ? 'Joined' : 'Join'}
+            {userWorkoutIds
+              .map(userWorkout => userWorkout.workoutId)
+              .includes(workoutId)
+              ? 'Joined'
+              : 'Join'}
           </Button>
         )}
         renderEditButton={workout => (
@@ -138,6 +159,17 @@ export default function Workout() {
             Delete
           </Button>
         )}
+        renderAssignButton={workoutId => (
+          <Button
+            variant="contained"
+            onClick={() => {
+              setSelectedWorkoutId(workoutId);
+              setShowAssignUserModal(true);
+            }}
+          >
+            Assign user
+          </Button>
+        )}
       />
     );
   };
@@ -157,14 +189,24 @@ export default function Workout() {
 
     return (
       <WorkoutsTable
-        workouts={workouts.filter(({ id }) => userWorkoutIds.includes(id))}
+        workouts={workouts.filter(({ id }) =>
+          userWorkoutIds.map(userWorkout => userWorkout.workoutId).includes(id),
+        )}
         tableName="Your workouts"
         isAdmin={isAdmin}
+        isCoach={user.role === UserRole.ROLE_COACH}
         renderActionButton={workoutId => (
           <Button
             variant="contained"
             color="error"
-            onClick={() => leaveWorkoutMutation.mutate({ workoutId })}
+            onClick={() => {
+              const userWorkoutId = userWorkoutIds.find(
+                userWorkout =>
+                  userWorkout.userId === user.id &&
+                  userWorkout.workoutId === workoutId,
+              )!.id;
+              leaveWorkoutMutation.mutate({ userWorkoutId });
+            }}
           >
             Leave
           </Button>
@@ -189,6 +231,7 @@ export default function Workout() {
             Delete
           </Button>
         )}
+        renderAssignButton={workoutId => <></>}
       />
     );
   };
@@ -231,6 +274,16 @@ export default function Workout() {
             setShowCreateWorkoutModal(false);
             workoutsQuery.refetch();
           }}
+        />
+      )}
+      {user.role === UserRole.ROLE_COACH && selectedWorkoutId !== null && (
+        <AssignUserToWorkoutModal
+          open={showAssignUserModal}
+          handleClose={() => {
+            setShowAssignUserModal(false);
+            setSelectedWorkoutId(null);
+          }}
+          workoutId={selectedWorkoutId as number}
         />
       )}
     </div>

@@ -24,9 +24,9 @@ export default class Workouts {
     return response.data;
   }
 
-  public static async leaveWorkout(workoutId: number) {
+  public static async leaveWorkout(userWorkoutId: number) {
     const response = await Api.createClient().delete(
-      `/user-workout/delete/${workoutId}`,
+      `/user-workout/delete/${userWorkoutId}`,
     );
 
     return response.data;

@@ -33,6 +33,12 @@ export interface Workout {
   participantsNumber: number;
 }
 
+export interface UserWorkout {
+  id: number;
+  workoutId: number;
+  userId: number;
+}
+
 export interface UserMembership {
   id: number;
   name: string;
