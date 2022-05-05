@@ -27,6 +27,7 @@ export default function Workout() {
   const dispatch = useAppDispatch();
   const user = useAppSelector(state => state.auth.user)!;
   const isAdmin = user.role === UserRole.ROLE_ADMIN;
+  const isCoach = user.role === UserRole.ROLE_COACH;
   const { workouts, userWorkoutIds } = useAppSelector(state => state.workouts);
 
   const workoutsQuery = useQuery('workouts', () => Workouts.getWorkouts(), {
@@ -248,7 +249,7 @@ export default function Workout() {
       <h2>Workouts</h2>
       {renderAllWorkouts()}
       {!isAdmin && renderUserWorkouts()}
-      {isAdmin && (
+      {(isAdmin || isCoach) && (
         <Button
           variant="contained"
           onClick={() => setShowCreateWorkoutModal(true)}
@@ -267,7 +268,7 @@ export default function Workout() {
           selectedWorkout={selectedWorkout as WorkoutType}
         />
       )}
-      {isAdmin && (
+      {(isAdmin || isCoach) && (
         <CreateWorkoutModal
           open={showCreateWorkoutModal}
           handleClose={() => {
