@@ -12,8 +12,13 @@ import { toast } from 'react-toastify';
 import WorkoutsTable from './WorkoutsTable';
 import EditWorkoutModal from './EditWorkoutModal';
 import CreateWorkoutModal from './CreateWorkoutModal';
+import AssignUserToWorkoutModal from './AssignUserToWorkoutModal';
 
 export default function Workout() {
+  const [showAssignUserModal, setShowAssignUserModal] = useState(false);
+  const [selectedWorkoutId, setSelectedWorkoutId] = useState<number | null>(
+    null,
+  );
   const [showEditWorkoutModal, setShowEditWorkoutModal] = useState(false);
   const [showCreateWorkoutModal, setShowCreateWorkoutModal] = useState(false);
   const [selectedWorkout, setSelectedWorkout] = useState<WorkoutType | null>(
@@ -116,6 +121,7 @@ export default function Workout() {
         workouts={workouts}
         tableName="Available workouts"
         isAdmin={isAdmin}
+        isCoach={user.role === UserRole.ROLE_COACH}
         renderActionButton={workoutId => (
           <Button
             variant="contained"
@@ -153,6 +159,17 @@ export default function Workout() {
             Delete
           </Button>
         )}
+        renderAssignButton={workoutId => (
+          <Button
+            variant="contained"
+            onClick={() => {
+              setSelectedWorkoutId(workoutId);
+              setShowAssignUserModal(true);
+            }}
+          >
+            Assign user
+          </Button>
+        )}
       />
     );
   };
@@ -177,6 +194,7 @@ export default function Workout() {
         )}
         tableName="Your workouts"
         isAdmin={isAdmin}
+        isCoach={user.role === UserRole.ROLE_COACH}
         renderActionButton={workoutId => (
           <Button
             variant="contained"
@@ -213,6 +231,7 @@ export default function Workout() {
             Delete
           </Button>
         )}
+        renderAssignButton={workoutId => <></>}
       />
     );
   };
@@ -255,6 +274,16 @@ export default function Workout() {
             setShowCreateWorkoutModal(false);
             workoutsQuery.refetch();
           }}
+        />
+      )}
+      {user.role === UserRole.ROLE_COACH && selectedWorkoutId !== null && (
+        <AssignUserToWorkoutModal
+          open={showAssignUserModal}
+          handleClose={() => {
+            setShowAssignUserModal(false);
+            setSelectedWorkoutId(null);
+          }}
+          workoutId={selectedWorkoutId as number}
         />
       )}
     </div>

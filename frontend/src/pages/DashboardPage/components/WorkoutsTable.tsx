@@ -13,8 +13,10 @@ interface Props {
   renderActionButton: (workoutId: number) => React.ReactNode;
   renderEditButton: (workout: WorkoutType) => React.ReactNode;
   renderDeleteButton: (workoutId: number) => React.ReactNode;
+  renderAssignButton: (workoutId: number) => React.ReactNode;
   tableName: string;
   isAdmin: boolean;
+  isCoach: boolean;
 }
 
 export default function WorkoutsTable({
@@ -22,8 +24,10 @@ export default function WorkoutsTable({
   renderActionButton,
   renderDeleteButton,
   renderEditButton,
+  renderAssignButton,
   tableName,
   isAdmin,
+  isCoach,
 }: Props) {
   const renderWorkoutsTableRows = (workoutsArr: WorkoutType[]) =>
     workoutsArr.map(workout => (
@@ -42,9 +46,15 @@ export default function WorkoutsTable({
           {workout.workoutEndDate.toLocaleDateString()}
         </TableCell>
         <TableCell align="right">{workout.participantsNumber}</TableCell>
+
         {!isAdmin && (
           <TableCell align="right">{renderActionButton(workout.id)}</TableCell>
         )}
+
+        {isCoach && (
+          <TableCell align="right">{renderAssignButton(workout.id)}</TableCell>
+        )}
+
         {isAdmin && (
           <>
             <TableCell align="right">{renderEditButton(workout)}</TableCell>
@@ -69,7 +79,7 @@ export default function WorkoutsTable({
               <TableCell align="right">End date</TableCell>
               <TableCell align="right">Participants number</TableCell>
               <TableCell align="right" />
-              {isAdmin && <TableCell align="right" />}
+              {(isAdmin || isCoach) && <TableCell align="right" />}
             </TableRow>
           </TableHead>
           <TableBody>{renderWorkoutsTableRows(workouts)}</TableBody>
