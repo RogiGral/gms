@@ -40,8 +40,8 @@ public class UserWorkoutController extends ExceptionHandling {
         return new ResponseEntity<>(userWorkouts, OK);
     }
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<HttpResponse> leaveWorkout(@PathVariable("userId") Long userId) throws WorkoutNotFoundException {
-            userWorkoutService.deleteUserWorkout(userId);
+    public ResponseEntity<HttpResponse> leaveWorkout(@PathVariable("userWorkoutId") Long userWorkoutId) throws WorkoutNotFoundException {
+            userWorkoutService.deleteUserWorkout(userWorkoutId);
         return response(OK, "USER_LEFT_WORKOUT");
     }
 

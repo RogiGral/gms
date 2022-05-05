@@ -10,5 +10,5 @@ import java.util.List;
 public interface UserWorkoutService {
     List<UserWorkout> getAllUserWorkouts(Long userId);
     UserWorkout addUserToWorkout(Long userId, Long workoutId) throws WorkoutNotFoundException, WorkoutIsFullException, UserIsAlreadyInWorkoutException;
-    void deleteUserWorkout(Long id) throws WorkoutNotFoundException;
+    void deleteUserWorkout(Long userWorkoutId) throws WorkoutNotFoundException;
 }

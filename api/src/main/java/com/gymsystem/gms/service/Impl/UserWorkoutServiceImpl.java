@@ -73,12 +73,12 @@ public class UserWorkoutServiceImpl implements UserWorkoutService {
     }
 
     @Override
-    public void deleteUserWorkout(Long id) throws WorkoutNotFoundException {
-        checkIfUserWorkoutExists(id);
-        UserWorkout userWorkout = userWorkoutRepository.findUserWorkoutById(id);
+    public void deleteUserWorkout(Long userWorkoutId) throws WorkoutNotFoundException {
+        checkIfUserWorkoutExists(userWorkoutId);
+        UserWorkout userWorkout = userWorkoutRepository.findUserWorkoutById(userWorkoutId);
         Workout workout = userWorkout.getWorkoutId();
         workout.setParticipantsNumber(workout.getParticipantsNumber()-1);
-        userWorkoutRepository.deleteById(id);
+        userWorkoutRepository.deleteById(userWorkoutId);
     }
 
     private void checkIfUserWorkoutExists(Long id) throws WorkoutNotFoundException {
