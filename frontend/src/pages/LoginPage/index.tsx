@@ -48,7 +48,7 @@ export default function LoginPage() {
         console.log('Logged in! data:', userData, 'jwt token:', jwtToken);
         Session.saveSession(jwtToken);
         dispatch(loadUser(userData));
-        history.push('/');
+        history.push('/dashboard');
         toast.success('Logged in!');
       },
     },

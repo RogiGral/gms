@@ -1,4 +1,5 @@
 export interface FetchUserResponse {
+  id: number;
   userId: string;
   firstName: string;
   lastName: string;
