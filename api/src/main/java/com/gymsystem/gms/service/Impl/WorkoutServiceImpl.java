@@ -1,6 +1,7 @@
 package com.gymsystem.gms.service.Impl;
 
 import com.gymsystem.gms.enumeration.Role;
+import com.gymsystem.gms.exceptions.model.UserNotFoundException;
 import com.gymsystem.gms.exceptions.model.WorkoutDateException;
 import com.gymsystem.gms.exceptions.model.WorkoutExistException;
 import com.gymsystem.gms.exceptions.model.WorkoutNotFoundException;
@@ -43,7 +44,7 @@ public class WorkoutServiceImpl implements WorkoutService {
     //Todo  sprawdzać czy trener nie ma jakiś zajęć w tych godzinach
     //Todo sprawdzac czy sala nie jest zajęta w tych godzinach
     @Override
-    public Workout createWorkout(String workoutName, String trainerUsername, String roomNumber,Integer capacity, Date workoutStartDate, Date workoutEndDate) throws WorkoutDateException, WorkoutExistException {
+    public Workout createWorkout(String workoutName, String trainerUsername, String roomNumber,Integer capacity, Date workoutStartDate, Date workoutEndDate) throws WorkoutDateException, WorkoutExistException, UserNotFoundException {
         checkIfTrainerExists(trainerUsername);
         validateStartEndDate(workoutStartDate,workoutEndDate);
         checkIfWorkoutExists(StringUtils.EMPTY,workoutName,trainerUsername,roomNumber,workoutStartDate,workoutEndDate);
@@ -62,10 +63,10 @@ public class WorkoutServiceImpl implements WorkoutService {
     // Todo do poprawy, co w przypadku kiedy poda się nowy workoutName a reszta będzie taka sama;
     //  solution, można zablokowac zmienianie innych danych poza nazwą - nie zbyt pasuje ale zawsze coś
     @Override
-    public Workout updateWorkout(String currentWorkoutName, String newWorkoutName, String newTrainerUsername, String newRoomNumber,Integer newCapacity,Integer newParticipantsNumber, Date newWorkoutStartDate, Date newWorkoutEndDate) throws WorkoutDateException, WorkoutExistException {
+    public Workout updateWorkout(Long id, String newWorkoutName, String newTrainerUsername, String newRoomNumber,Integer newCapacity,Integer newParticipantsNumber, Date newWorkoutStartDate, Date newWorkoutEndDate) throws WorkoutDateException, WorkoutExistException, UserNotFoundException, WorkoutNotFoundException {
         checkIfTrainerExists(newTrainerUsername);
         validateStartEndDate(newWorkoutStartDate,newWorkoutEndDate);
-        Workout workout = checkIfWorkoutExists(currentWorkoutName,newWorkoutName,newTrainerUsername,newRoomNumber,newWorkoutStartDate,newWorkoutEndDate);
+        Workout workout = findWorkoutById(id);
         workout.setWorkoutName(newWorkoutName);
         workout.setTrainerUsername(newTrainerUsername);
         workout.setRoomNumber(newRoomNumber);
@@ -79,19 +80,25 @@ public class WorkoutServiceImpl implements WorkoutService {
 
     @Override
     public void deleteWorkout(Long id) throws WorkoutNotFoundException {
+        findWorkoutById(id);
+        workoutRepository.deleteById(id);
+    }
+
+    private Workout findWorkoutById(Long id) throws WorkoutNotFoundException {
         Workout workout = workoutRepository.findWorkoutById(id);
         if(workout == null){
             throw new WorkoutNotFoundException(NO_WORKOUT_FOUND_BY_ID+id);
         }
-        workoutRepository.deleteById(id);
+        return workout;
     }
-    private void checkIfTrainerExists(String trainerUsername) {
+
+    private void checkIfTrainerExists(String trainerUsername) throws UserNotFoundException {
         User trainer = userRepository.findUserByUsername(trainerUsername);
         if (trainer == null) {
-            throw new UsernameNotFoundException(NO_TRAINER_FOUND_BY_USERNAME + trainerUsername);
+            throw new UserNotFoundException(NO_TRAINER_FOUND_BY_USERNAME + trainerUsername);
         }
         if(trainer.getRole()==Role.ROLE_COACH.toString()){
-            throw new UsernameNotFoundException(USER_IS_NOT_TRAINER  + trainerUsername);
+            throw new UserNotFoundException(USER_IS_NOT_TRAINER  + trainerUsername);
         }
     }
 
