@@ -121,7 +121,6 @@ export default function EditUserModal({
     role,
     email,
   }: UpdateUserForm) => {
-    console.log('submitted');
     updateUserMutation.mutate({
       username: selectedUser.username,
       firstName,
